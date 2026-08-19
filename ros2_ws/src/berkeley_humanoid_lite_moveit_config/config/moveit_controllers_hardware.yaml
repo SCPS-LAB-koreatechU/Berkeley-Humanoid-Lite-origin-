@@ -1,9 +1,10 @@
 # Controllers for running against real hardware.
 #
 # Differs from moveit_controllers_v1arm.yaml only in where the hands go: the
-# arms still land on /arms_controller (now served by hardware_bridge.py instead
-# of sim_trajectory_server.py, same action name), while each hand is routed to a
-# dexhand_bringup driver, which already speaks FollowJointTrajectory.
+# arms and wrist still land on /arms_controller (now served by hardware_bridge.py
+# instead of sim_trajectory_server.py, same action name), while each hand is
+# routed to a dexhand_bringup driver, which already speaks FollowJointTrajectory.
+# Selected by demo.launch.py hardware:=true for every model.
 #
 # The right hand goes straight there -- its driver already uses the same
 # R_<finger>_<Yaw|Pitch> names this URDF does. The left hand goes through
@@ -39,6 +40,15 @@ moveit_simple_controller_manager:
       - arm_right_shoulder_yaw_joint
       - arm_right_elbow_pitch_joint
       - arm_right_elbow_roll_joint
+      # V1 wrist -- Feetech serial servos, also served by hardware_bridge.py.
+      # Only the v1arm model has these joints; MoveIt ignores controller
+      # joints that are not in the loaded robot model.
+      - arm_left_wrist_pitch_lower_joint
+      - arm_left_wrist_yaw_joint
+      - arm_left_wrist_pitch_upper_joint
+      - arm_right_wrist_pitch_lower_joint
+      - arm_right_wrist_yaw_joint
+      - arm_right_wrist_pitch_upper_joint
 
   # dexhand_bringup declares this action with a RELATIVE name, so it resolves to
   # /hand_controller/follow_joint_trajectory -- not under the node name, unlike

@@ -24,6 +24,17 @@
         <group name="right_arm"/>
     </group>
 
+    <group name="left_shoulder">
+        <joint name="arm_left_shoulder_pitch_joint"/>
+        <joint name="arm_left_shoulder_roll_joint"/>
+        <joint name="arm_left_shoulder_yaw_joint"/>
+    </group>
+    <group name="right_shoulder">
+        <joint name="arm_right_shoulder_pitch_joint"/>
+        <joint name="arm_right_shoulder_roll_joint"/>
+        <joint name="arm_right_shoulder_yaw_joint"/>
+    </group>
+
     <group name="right_hand">
         <joint name="R_Index_Yaw"/>
         <joint name="R_Index_Pitch"/>
@@ -84,6 +95,26 @@
         <joint name="arm_left_wrist_pitch_lower_joint" value="0"/>
         <joint name="arm_left_wrist_yaw_joint" value="0"/>
         <joint name="arm_left_wrist_pitch_upper_joint" value="0"/>
+    </group_state>
+    <group_state name="home" group="left_shoulder">
+        <joint name="arm_left_shoulder_pitch_joint" value="0.0"/>
+        <joint name="arm_left_shoulder_roll_joint" value="0.0"/>
+        <joint name="arm_left_shoulder_yaw_joint" value="0.0"/>
+    </group_state>
+    <group_state name="ready" group="left_shoulder">
+        <joint name="arm_left_shoulder_pitch_joint" value="-0.3"/>
+        <joint name="arm_left_shoulder_roll_joint" value="0.3"/>
+        <joint name="arm_left_shoulder_yaw_joint" value="0.0"/>
+    </group_state>
+    <group_state name="home" group="right_shoulder">
+        <joint name="arm_right_shoulder_pitch_joint" value="-0.0"/>
+        <joint name="arm_right_shoulder_roll_joint" value="-0.0"/>
+        <joint name="arm_right_shoulder_yaw_joint" value="0.0"/>
+    </group_state>
+    <group_state name="ready" group="right_shoulder">
+        <joint name="arm_right_shoulder_pitch_joint" value="0.3"/>
+        <joint name="arm_right_shoulder_roll_joint" value="-0.3"/>
+        <joint name="arm_right_shoulder_yaw_joint" value="0.0"/>
     </group_state>
 
     <group_state name="open" group="right_hand">
@@ -1012,21 +1043,16 @@
     <disable_collisions link1="arm_right_forearm" link2="L_Index_Knuckle_Cross_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Index_Middle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Index_Tip_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_forearm" link2="L_Middle_Knuckle_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_forearm" link2="L_Middle_Knuckle_Cross_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_forearm" link2="L_Middle_Middle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Pinky_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Pinky_Knuckle_Cross_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Pinky_Middle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Pinky_Tip_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_forearm" link2="L_Ring_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Ring_Knuckle_Cross_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Ring_Middle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Ring_Tip_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Thumb_Dist_KC_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Thumb_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="L_Thumb_Prox_KC_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_forearm" link2="L_base_link" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="Middle_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="Middle_Knuckle_Cross_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_forearm" link2="Middle_Middle_1" reason="Never in collision"/>
@@ -1105,14 +1131,9 @@
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Index_Knuckle_Cross_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Index_Middle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Index_Tip_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_wrist_lower" link2="L_Middle_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Middle_Knuckle_Cross_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_wrist_lower" link2="L_Middle_Middle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Midle_Tip_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_wrist_lower" link2="L_Pinky_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Pinky_Knuckle_Cross_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_wrist_lower" link2="L_Pinky_Middle_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_wrist_lower" link2="L_Pinky_Tip_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Ring_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Ring_Knuckle_Cross_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_lower" link2="L_Ring_Middle_1" reason="Never in collision"/>
@@ -1159,8 +1180,6 @@
     <disable_collisions link1="arm_right_wrist_upper" link2="L_Midle_Tip_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_upper" link2="L_Pinky_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_upper" link2="L_Pinky_Knuckle_Cross_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_wrist_upper" link2="L_Pinky_Middle_1" reason="Never in collision"/>
-    <disable_collisions link1="arm_right_wrist_upper" link2="L_Pinky_Tip_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_upper" link2="L_Ring_Knuckle_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_upper" link2="L_Ring_Knuckle_Cross_1" reason="Never in collision"/>
     <disable_collisions link1="arm_right_wrist_upper" link2="L_Ring_Middle_1" reason="Never in collision"/>

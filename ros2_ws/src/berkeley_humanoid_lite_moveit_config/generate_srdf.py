@@ -3,7 +3,8 @@
 
 Three things are stitched together:
 
-  * the arm groups, written here;
+  * the arm groups, written here, plus a <side>_shoulder joint group per arm
+    for hardware bring-up (shoulder motors only, see shoulder_group);
   * the hand group and its grip presets, lifted from the DexHand's own SRDF so
     the poses their team tuned (open, fist, cylinder_grip, ...) carry over
     unchanged -- once per hand, renamed per side;
@@ -79,6 +80,36 @@ def arm_group(side: str, tip: str) -> str:
     return (f'    <group name="{side}_arm">\n'
             f'        <chain base_link="base" tip_link="{tip}"/>\n'
             f'    </group>')
+
+
+SHOULDER_JOINTS = ["shoulder_pitch", "shoulder_roll", "shoulder_yaw"]
+
+
+def shoulder_group(side: str) -> list[str]:
+    """Joint-space group of the three shoulder motors only.
+
+    Exists for hardware bring-up: hardware_joints.yaml enables the shoulder
+    motors first (they are the calibrated, bench-tested ones), and the bridge
+    refuses any trajectory that names a disabled joint. Planning in <side>_arm
+    always names all eight, so this is the group to use until elbow and wrist
+    are verified. No IK, no marker -- joint targets only.
+    """
+    lines = [f'    <group name="{side}_shoulder">']
+    for joint in SHOULDER_JOINTS:
+        lines.append(f'        <joint name="arm_{side}_{joint}_joint"/>')
+    lines.append("    </group>")
+    return lines
+
+
+def shoulder_state(side: str, name: str, values: dict) -> list[str]:
+    lines = [f'    <group_state name="{name}" group="{side}_shoulder">']
+    for joint in SHOULDER_JOINTS:
+        value = values[joint]
+        if side == "right" and joint in MIRRORED_JOINTS:
+            value = -value
+        lines.append(f'        <joint name="arm_{side}_{joint}_joint" value="{value}"/>')
+    lines.append("    </group_state>")
+    return lines
 
 
 def arm_state(side: str, name: str, values: dict, wrist: bool) -> list[str]:
@@ -209,12 +240,18 @@ def main() -> None:
         "    </group>",
         "",
     ]
+    for side in ("left", "right"):
+        body += shoulder_group(side)
+    body.append("")
     if hand_groups:
         body += [hand_groups, ""]
 
     for side in ("right", "left"):
         for name, values in ARM_STATES.items():
             body += arm_state(side, name, values, wrist and side in sides)
+    for side in ("left", "right"):
+        for name, values in ARM_STATES.items():
+            body += shoulder_state(side, name, values)
     if hand_states:
         body += ["", hand_states, ""]
 

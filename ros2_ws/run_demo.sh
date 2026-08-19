@@ -13,6 +13,7 @@
 #
 #   ./run_demo.sh                 # RViz + move_group
 #   ./run_demo.sh use_rviz:=false # headless, for check_ik.py
+#   ./run_demo.sh hardware:=true  # real controllers, all in dry run (see demo.launch.py)
 #
 # Pass a different domain with ROS_DOMAIN_ID=NN ./run_demo.sh
 
@@ -29,6 +30,21 @@ if [[ ! -f "${WORKSPACE}/install/setup.bash" ]]; then
 fi
 # shellcheck disable=SC1091
 source "${WORKSPACE}/install/setup.bash"
+
+# hardware:=true starts the DexHand drivers from the dexhand workspace; source
+# it when present so the hand packages resolve. Harmless for pure simulation.
+DEXHAND_WS="${DEXHAND_WS:-${HOME}/Desktop/dexhand_moveit_ws}"
+if [[ -f "${DEXHAND_WS}/install/setup.bash" ]]; then
+  # shellcheck disable=SC1091
+  source "${DEXHAND_WS}/install/setup.bash"
+fi
+
+# hardware:=true live:=true needs the recoil CAN driver, which lives in the
+# repo's lowlevel package and is not pip-installed here.
+LOWLEVEL="${LOWLEVEL:-${WORKSPACE}/../source/berkeley_humanoid_lite_lowlevel}"
+if [[ -d "${LOWLEVEL}/berkeley_humanoid_lite_lowlevel" ]]; then
+  export PYTHONPATH="${LOWLEVEL}${PYTHONPATH:+:${PYTHONPATH}}"
+fi
 
 export ROS_DOMAIN_ID="${ROS_DOMAIN_ID:-77}"
 if [[ "${ROS_DOMAIN_ID}" == "0" ]]; then

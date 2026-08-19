@@ -24,6 +24,9 @@ Servo output starts off, as it does for the right hand:
     ros2 service call /left_hand_adapter/enable std_srvs/srv/SetBool '{data: true}'
 """
 
+from pathlib import Path
+
+import yaml
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, OpaqueFunction
 from launch.substitutions import LaunchConfiguration
@@ -45,10 +48,19 @@ def launch_setup(context, *_args, **_kwargs):
         )
 
     serial_port = LaunchConfiguration("serial_port").perform(context)
+    link = LaunchConfiguration("link").perform(context)
     yaw_dir = [float(v) for v in
                LaunchConfiguration("yaw_dir").perform(context).split(",")]
     flex_dir = [float(v) for v in
                 LaunchConfiguration("flex_dir").perform(context).split(",")]
+
+    # Same calibration file the right hand runs with (spans, pitch/yaw ranges),
+    # minus the two keys that are not valid ROS parameters.
+    with open(Path(get_package_share_directory("dexhand_bringup")) / "config"
+              / "servo_map.yaml", encoding="utf-8") as fp:
+        servo_params = yaml.safe_load(fp)["dexhand_driver"]["ros__parameters"]
+    for key in ("servo_cal", "servo_names"):
+        servo_params.pop(key, None)
 
     return [
         Node(
@@ -57,8 +69,8 @@ def launch_setup(context, *_args, **_kwargs):
             name="dexhand_driver",
             namespace=NAMESPACE,
             output="screen",
-            parameters=[{
-                "link": "serial",
+            parameters=[servo_params, {
+                "link": link,
                 "serial_port": serial_port,
                 # The left hand is a mirrored assembly, so spread runs the other
                 # way while curl does not. Verify on the bench before trusting it:
@@ -93,6 +105,11 @@ def generate_launch_description() -> LaunchDescription:
         DeclareLaunchArgument(
             "serial_port", default_value="/dev/ttyACM1",
             description="serial port of the LEFT hand (the right one is usually ACM0)",
+        ),
+        DeclareLaunchArgument(
+            "link", default_value="serial",
+            description="serial for the real board, none for a dry run of the "
+                        "adapter/driver pair with no port opened",
         ),
         DeclareLaunchArgument(
             "yaw_dir", default_value="-1,-1,-1,-1",
