@@ -1,5 +1,10 @@
 # Berkeley Humanoid Lite
 
+> **Licensing note.** This repository is not uniformly MIT. The DexHand
+> descriptions vendored under `ros2_ws/vendor/`, and the mirrored meshes derived
+> from them, are CC BY-NC-SA 4.0 — NonCommercial and ShareAlike. See
+> [NOTICE](NOTICE) and [ros2_ws/THIRD_PARTY.md](ros2_ws/THIRD_PARTY.md).
+
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://docs.python.org/3/whatsnew/3.11.html)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](https://opensource.org/license/mit)
 [![License](https://img.shields.io/badge/license-CC%20BY--SA%204.0-orange.svg)](https://creativecommons.org/licenses/by-sa/4.0/)

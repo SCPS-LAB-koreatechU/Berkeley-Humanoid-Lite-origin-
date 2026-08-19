@@ -1,0 +1,28 @@
+NOTICE — this repository is not uniformly MIT
+=============================================
+
+The root LICENCE (MIT, Berkeley Humanoid Lite Project Developers) covers the
+upstream project and the work added here, with one exception that GitHub's
+repository page does not show:
+
+    ros2_ws/vendor/**                                              CC BY-NC-SA 4.0
+    ros2_ws/src/berkeley_humanoid_lite_description/meshes_dexhand_left/
+                                                                   CC BY-NC-SA 4.0
+
+Those are DexHand descriptions from https://github.com/iotdesignshop, vendored
+so the arm models build, plus one directory of meshes mirrored from them. Each
+directory keeps its upstream LICENSE and a VENDORED.md recording the exact
+commit it came from.
+
+CC BY-NC-SA 4.0 is **NonCommercial** and **ShareAlike**: it forbids commercial
+use, and derivative works must carry the same licence. That is why the mirrored
+left-hand meshes are marked CC BY-NC-SA rather than MIT — reflecting a mesh
+produces a derivative of it. The generated URDFs that reference those meshes and
+embed DexHand joint values should be treated the same way.
+
+Full detail, including which generated files are affected and how to obtain a
+tree with no CC BY-NC-SA content in it, is in:
+
+    ros2_ws/THIRD_PARTY.md
+
+This file describes what the upstream licences say. It is not legal advice.
