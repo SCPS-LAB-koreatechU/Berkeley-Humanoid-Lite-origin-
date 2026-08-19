@@ -1,0 +1,86 @@
+# How the DexHand V1 forearm attaches to each arm, and what happens downstream.
+#
+# The wrist is no longer guesswork. `generate_urdf.py` reads the real joint
+# origins, axes and travel limits straight out of the V1 description in
+# vendor/dexhand_v1_description, so the chain below is whatever upstream says:
+#
+#   forearm  --wrist_pitch_lower-->  wrist_lower
+#            --wrist_yaw---------->  wrist_upper
+#            --wrist_pitch_upper-->  hand
+#
+# Right side, for reference (metres, radians; the left side differs slightly and
+# is read from its own file rather than mirrored):
+#
+#   wrist_pitch_lower  xyz (-0.012,   -0.0217, 0.203)     axis (0, -1, 0)  +/- 30.0 deg
+#   wrist_yaw          xyz (-0.01198,  0.021,  0.029)     axis (-1, 0, 0)  +/- 25.0 deg
+#   wrist_pitch_upper  xyz ( 0.012,    0.021,  0.023266)  axis (0, -1, 0)  +/- 20.0 deg
+#
+# Three parts, three joints: Forearm, Wrist_joint (lower + upper halves), Hand.
+# There is no axial rotation joint -- the V1 README lists that servo as optional
+# and the upstream URDF does not model it.
+
+# The legs are not part of this build: nothing plans them, no motor drives them,
+# and they only ever contributed collision geometry and mass. Set true to put
+# them back -- the whole chain (URDF, collision matrix, SRDF) regenerates from
+# this one flag.
+#
+# With legs off the torso simply floats: `world` welds to `base` at the origin
+# and the base mesh sits ~0.675 m up, exactly where it was before. Nothing moves,
+# the legs just stop being drawn.
+include_legs: false
+
+# ============================ STILL A GUESS ============================
+# The mount below is the one transform nobody has measured: where the V1
+# forearm bolts onto the humanoid's elbow_roll. No such adapter part exists in
+# either CAD, so this is the piece to dial in.
+#
+#   python3 generate_urdf.py
+#   ros2 launch berkeley_humanoid_lite_description display.launch.py model:=tuning
+#   ros2 run berkeley_humanoid_lite_description read_mount.py --watch
+#
+# Slider values are the URDF origin directly -- paste them back over mount.right.
+# =======================================================================
+#
+# Default reasoning: the stock hand body sat at z = +0.054 in the elbow_roll
+# frame, so +Z is the distal direction, and the V1 forearm also runs along its
+# own +Z (the first wrist joint is at z = 0.203). Identity therefore already
+# points the forearm the right way. Standoff and roll about that axis do not.
+mount:
+  right:
+    xyz: [0.0, 0.0, 0.0]
+    rpy: [0.0, 0.0, 0.0]
+  # `mirror` derives the left mount from the right by negating y and the
+  # roll/yaw components. Replace with explicit xyz/rpy if the sides differ.
+  left: mirror
+
+wrist:
+  # false welds the hand straight to the mount (the DexHand V2 arrangement).
+  enabled: true
+
+  # Which joints to take from the V1 URDF, in order. Dropping a name welds that
+  # joint at zero, so ["wrist_pitch_lower", "wrist_yaw"] gives a 2-DOF wrist if
+  # you build it with fewer servos.
+  joints:
+    - wrist_pitch_lower
+    - wrist_yaw
+    - wrist_pitch_upper
+
+  # Upstream inertials are Fusion 360 defaults at steel density (~7850 kg/m3),
+  # which overstates a printed forearm by roughly 6.3x. Masses and inertia
+  # tensors are rescaled by this / 7850.
+  #
+  # 1240 is solid PLA. Real parts are 25-30% infill so the true structure is
+  # lighter still -- but the servos, battery and electronics inside the forearm
+  # are not modelled at all, and they roughly cancel it. Neither number is
+  # measured; weigh the finished assembly if it matters.
+  structure_density_kgm3: 1240.0
+
+# Wrist -> DexHand V2 hand base (`base_link`).
+#
+# V1's own wrist_pitch_upper drives `index_bulk_1`, the first link of the V1
+# hand. Here the V2 hand takes that place, so this transform is the V1-wrist to
+# V2-hand mechanical interface -- a part that does not exist yet. Identity until
+# it is designed.
+hand_interface:
+  xyz: [0.0, 0.0, 0.0]
+  rpy: [0.0, 0.0, 0.0]
