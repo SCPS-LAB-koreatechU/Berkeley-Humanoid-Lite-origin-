@@ -254,24 +254,38 @@ def mirror_link(name: str) -> str:
     return "L_" + name[2:] if name.startswith("R_") else "L_" + name
 
 
-def import_srdf_pairs(path: Path, mirror: bool) -> tuple[list[str], set[str]]:
+def import_srdf_pairs(path: Path, mirror: bool,
+                      present: set[str] | None = None) -> tuple[list[str], set[str]]:
     """Reuse an existing SRDF's disable_collisions entries.
 
     With `mirror`, each pair is emitted twice: once verbatim for the right hand
     and once with left-side names. The mirrored hand is geometrically identical,
     so a pair that can never collide on one side can never collide on the other.
+
+    `present` is the model's own link set. Pairs naming anything outside it are
+    dropped: the imported matrix describes the whole DexHand V2, palm included,
+    and this build's palm is V1's, so those pairs are about a part that is not
+    here. Keeping them produces an SRDF MoveIt refuses to load, naming a link
+    nothing has heard of. Dropping them leaves those pairs to be computed
+    against the palm that is actually fitted.
     """
     root = ET.parse(path).getroot()
-    lines, links = [], set()
+    lines, links, dropped = [], set(), 0
     for entry in root.findall("disable_collisions"):
         a, b = entry.get("link1"), entry.get("link2")
         reason = entry.get("reason", "Imported")
         for left, right in ([(a, b)] + ([(mirror_link(a), mirror_link(b))] if mirror else [])):
+            if present is not None and not {left, right} <= present:
+                dropped += 1
+                continue
             links.update((left, right))
             lines.append(
                 f'    <disable_collisions link1="{left}" link2="{right}" '
                 f'reason="{reason}"/>'
             )
+    if dropped:
+        print(f"<!-- dropped {dropped} imported pairs naming links this model "
+              f"does not have -->")
     return lines, links
 
 
@@ -293,7 +307,9 @@ def main() -> None:
     imported_links: set[str] = set()
     if args.import_srdf:
         imported_lines, imported_links = import_srdf_pairs(
-            args.import_srdf.expanduser(), args.mirror_import
+            args.import_srdf.expanduser(), args.mirror_import,
+            present={link.get("name") for link in
+                     ET.parse(args.urdf).getroot().iter("link")},
         )
         print(f"<!-- imported {len(imported_lines)} pairs over "
               f"{len(imported_links)} links from {args.import_srdf.name} -->")

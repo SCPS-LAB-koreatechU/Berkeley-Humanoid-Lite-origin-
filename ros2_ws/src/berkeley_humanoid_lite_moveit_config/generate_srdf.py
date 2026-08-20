@@ -56,7 +56,42 @@ MODELS = {
     },
 }
 
-TIP = {"right": "base_link", "left": "L_base_link"}
+# The arm chains' tip link, derived from the URDF rather than named. It used to
+# be the DexHand V2 hand's own root, which does not exist on a build whose palm
+# is V1's -- MoveIt then refuses the group, naming a link nothing has heard of.
+def arm_tip(urdf: Path, side: str) -> str:
+    """The palm link the arm chain ends at: the digits' lowest common ancestor.
+
+    On a V2 palm that is its one printed part; on a V1 palm the digits sit on
+    four bulk pieces bolted in a row and the answer is the first of them, the
+    one the wrist drives. Either way it is the link rigidly carrying the whole
+    hand, which is what an arm chain should end at.
+    """
+    root = ET.parse(urdf).getroot()
+    joints = [j for j in root.iter("joint") if j.find("parent") is not None]
+    parent_of = {j.find("child").get("link"): j for j in joints}
+    prefix = "R_" if side == "right" else "L_"
+    mounts = [j.find("parent").get("link") for j in joints
+              if (j.get("name") or "").startswith(prefix) and j.get("name").endswith("_Yaw")]
+    if not mounts:
+        raise SystemExit(f"{urdf}: no {prefix}*_Yaw joints; cannot find the {side} palm")
+
+    def ancestry(link):
+        out = [link]
+        while (joint := parent_of.get(link)) is not None:
+            link = joint.find("parent").get("link")
+            if link in out:
+                break
+            out.append(link)
+        return out
+
+    shared = set(ancestry(mounts[0]))
+    for mount in mounts[1:]:
+        shared &= set(ancestry(mount))
+    for link in ancestry(mounts[0]):
+        if link in shared:
+            return link
+    raise SystemExit(f"{urdf}: {side} digit mounts share no ancestor")
 STOCK_TIP = {"right": "arm_right_hand_link", "left": "arm_left_hand_link"}
 
 ARM_STATES = {
@@ -230,8 +265,9 @@ def main() -> None:
         '<robot name="berkeley-humanoid-lite">',
         "",
     ]
+    tips = {side: arm_tip(urdf, side) for side in sides}
     for side in sides:
-        body.append(arm_group(side, TIP[side]))
+        body.append(arm_group(side, tips[side]))
     # The left arm keeps its stock end effector in the right-arm-only model.
     for side in ("right", "left"):
         if side not in sides:
@@ -260,7 +296,7 @@ def main() -> None:
 
     for side in sides:
         body.append(
-            f'    <end_effector name="{side}_hand_ee" parent_link="{TIP[side]}"\n'
+            f'    <end_effector name="{side}_hand_ee" parent_link="{tips[side]}"\n'
             f'                  group="{side}_hand" parent_group="{side}_arm"/>'
         )
     body += [
