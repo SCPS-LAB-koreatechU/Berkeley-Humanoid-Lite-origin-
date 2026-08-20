@@ -3,6 +3,11 @@ project(berkeley_humanoid_lite_description)
 
 find_package(ament_cmake REQUIRED)
 
+# A fresh clone has dangling mesh symlinks; say so usefully rather than letting
+# install() fail with a bare path.
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/require_mesh_directories.cmake)
+require_mesh_directories()
+
 # meshes/ and meshes_dexhand/ are symlinks into source/berkeley_humanoid_lite_assets
 # and the dexhand workspace, so the STLs are not duplicated here. The trailing
 # slash makes CMake follow the symlink and install the contents.

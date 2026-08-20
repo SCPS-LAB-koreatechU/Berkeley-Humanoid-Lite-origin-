@@ -11,14 +11,33 @@ Every command in one place: **[COMMANDS.md](COMMANDS.md)**.
 ## Build and run
 
 ```bash
+git submodule update --init source/berkeley_humanoid_lite_assets
 cd ros2_ws
 source /opt/ros/humble/setup.bash && colcon build --symlink-install
 ./run_demo.sh
 ```
 
-A fresh clone already has everything it needs — `vendor/` and the mirrored
-left-hand meshes are committed — so `fetch_vendor.sh` and `mirror_meshes.py` are
-only for refreshing them from upstream.
+**The submodule step is not optional.** `description/meshes` is a symlink into
+the assets submodule, so on a fresh clone it dangles and the build stops at
+
+```
+ament_cmake_symlink_install_directory() can't find '.../meshes/'
+```
+
+which names the path and nothing else. CMake now checks the mesh directories up
+front and prints the command that fixes each one, but the submodule still has to
+be there. `.gitmodules` points at SSH; without keys on the machine, fetch it
+over HTTPS instead:
+
+```bash
+git -c submodule.source/berkeley_humanoid_lite_assets.url=\
+https://github.com/HybridRobotics/Berkeley-Humanoid-Lite-Assets.git \
+    submodule update --init source/berkeley_humanoid_lite_assets
+```
+
+`vendor/` and the mirrored left-hand meshes *are* committed, so
+`fetch_vendor.sh` and `mirror_meshes.py` are only for refreshing them from
+upstream.
 
 **This repository is not uniformly MIT.** The DexHand content under `vendor/`,
 and the mirrored meshes derived from it, are CC BY-NC-SA 4.0: NonCommercial and
