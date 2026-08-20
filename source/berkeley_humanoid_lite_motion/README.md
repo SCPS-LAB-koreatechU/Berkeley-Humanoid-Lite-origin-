@@ -96,6 +96,12 @@ finger's axes lie exactly along y). Nine poses across the travel is the point of
 diminishing returns. A video is easier than nine stills; pull frames afterwards
 with `ffmpeg -i sweep.mp4 -vf fps=1 frame_%03d.png`.
 
+**Clamp the finger and fix the camera.** Handheld does not work: the module
+gets reoriented between poses, and each reorientation foreshortens the
+projection differently. In one 57-second handheld clip the proximal-to-middle
+phalanx length ratio — a constant of the hardware — ranged over 0.63 to 0.88,
+which is the foreshortening measuring itself.
+
 **Aiming the camera is the error that matters, and the only one you cannot fix
 afterwards.** Looking along the finger rather than across it foreshortens it,
 and a foreshortened finger still gives a perfectly self-consistent set of
@@ -117,6 +123,22 @@ the hand happens to sit is the failure mode. Put the camera on the table, level
 with the hand, perpendicular to the finger, and keep it still between poses.
 
 Then:
+
+Every joint runs on a bearing whose dark ring sits on white plastic, so the
+joints can be found automatically and the clicking skipped entirely:
+
+```bash
+python3 scripts/motion/track_finger_joints.py sweep.mp4 \
+    --base 240,610 --roi 300,80,700,400 --preview /tmp/check -o angles.csv
+python3 scripts/motion/fit_finger_coupling.py angles.csv
+```
+
+That measures `Flexor ← Pitch` — the ratio actually worth measuring, since
+`DIP ← Flexor` already comes from the vendor's CAD at 1.0. The fingertip has no
+bearing, so the distal angle is left unmeasured rather than guessed. Look at the
+`--preview` frames before believing the numbers.
+
+To do it by hand instead, or to get the distal stage too:
 
 ```bash
 python3 scripts/motion/fit_finger_coupling.py points.csv --from-points --template

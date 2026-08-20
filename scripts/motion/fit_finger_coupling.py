@@ -165,7 +165,11 @@ def read_csv(path: Path, columns: list[str]) -> dict[str, np.ndarray]:
             if finger not in FINGERS:
                 raise SystemExit(f"{path}:{line}: unknown finger {row['finger']!r}")
             try:
-                rows[finger].append([float(row[c]) for c in columns])
+                # Blank means "not measured": track_finger_joints.py leaves the
+                # distal angle empty because the fingertip has no bearing to
+                # find. NaN here rather than a zero, which would fit as data.
+                rows[finger].append([np.nan if not (row[c] or "").strip()
+                                     else float(row[c]) for c in columns])
             except (TypeError, ValueError):
                 raise SystemExit(f"{path}:{line}: non-numeric value")
     if not rows:
@@ -295,7 +299,7 @@ def fit_ratio(driver: np.ndarray, driven: np.ndarray) -> tuple[float, float, flo
     straight. An intercept large enough to matter means the zero pose was
     recorded wrong, and `check_offset` says so.
     """
-    keep = np.abs(driver) > 1e-9
+    keep = (np.abs(driver) > 1e-9) & np.isfinite(driver) & np.isfinite(driven)
     driver, driven = driver[keep], driven[keep]
     if len(driver) < 2:
         raise SystemExit("need at least two non-zero poses")
@@ -308,7 +312,7 @@ def fit_ratio(driver: np.ndarray, driven: np.ndarray) -> tuple[float, float, flo
 
 def check_offset(driver: np.ndarray, driven: np.ndarray) -> float:
     """Intercept of an unconstrained line, in the driven joint's units."""
-    keep = np.abs(driver) > 1e-9
+    keep = (np.abs(driver) > 1e-9) & np.isfinite(driver) & np.isfinite(driven)
     if keep.sum() < 2:
         return 0.0
     A = np.stack([driver[keep], np.ones(keep.sum())], axis=1)
@@ -333,7 +337,7 @@ def check_curvature(driver: np.ndarray, driven: np.ndarray) -> tuple[float, floa
     `departure` is how far the curve strays from the line as a fraction of the
     driven joint's range -- what the linear fit costs you, if it is real.
     """
-    keep = np.abs(driver) > 1e-9
+    keep = (np.abs(driver) > 1e-9) & np.isfinite(driver) & np.isfinite(driven)
     x, y = driver[keep], driven[keep]
     n, extra = len(x), CURVATURE_DEGREE - 1
     if n < CURVATURE_DEGREE + 3:
@@ -356,7 +360,12 @@ def fit_from_angles(data: dict[str, np.ndarray], to_radians: float) -> dict[str,
     for finger, rows in data.items():
         pitch, flexor, dip = (rows[:, i] * to_radians for i in range(3))
         f_slope, f_sigma, f_rms = fit_ratio(pitch, flexor)
-        d_slope, d_sigma, d_rms = fit_ratio(flexor, dip)
+        if np.all(np.isnan(dip)):
+            # The distal stage was not measured. Reported as such rather than
+            # fitted to nothing; upstream's own CAD already declares it at 1.0.
+            d_slope, d_sigma, d_rms = np.nan, np.nan, 0.0
+        else:
+            d_slope, d_sigma, d_rms = fit_ratio(flexor, dip)
         out[finger] = {
             "flexor": (f_slope, f_sigma),
             "dip": (d_slope, d_sigma),
@@ -375,7 +384,9 @@ def pooled_diagnostics(data: dict[str, np.ndarray], to_radians: float) -> dict:
     """
     stacked = np.concatenate([rows for rows in data.values()]) * to_radians
     pitch, flexor, dip = stacked[:, 0], stacked[:, 1], stacked[:, 2]
-    stages = ((pitch, flexor), (flexor, dip))
+    stages = [(pitch, flexor)]
+    if not np.all(np.isnan(dip)):
+        stages.append((flexor, dip))
     curvature = [check_curvature(a, b) for a, b in stages]
     best = min(curvature, key=lambda c: c[0])
     return {
@@ -440,11 +451,13 @@ def report(fits: dict[str, dict], mode: str, diagnostics: dict | None = None) ->
         f, fs = fit["flexor"]
         d, ds = fit["dip"]
         rms = fit.get("rms_deg", fit.get("rms_mm", float("nan")))
-        print(f"{finger:8s} {f:11.4f} +/-{fs:.4f} {d:11.4f} +/-{ds:.4f} "
+        dip_text = ("     not measured" if not np.isfinite(d)
+                    else f"{d:11.4f} +/-{ds:.4f}")
+        print(f"{finger:8s} {f:11.4f} +/-{fs:.4f} {dip_text:>18s} "
               f"{rms:10.2f}  {fit['samples']}")
 
-    flexor = [fits[f]["flexor"][0] for f in fits]
-    dip = [fits[f]["dip"][0] for f in fits]
+    flexor = np.array([fits[f]["flexor"][0] for f in fits])
+    dip = np.array([fits[f]["dip"][0] for f in fits])
     print()
 
     if diagnostics and diagnostics.get("foreshortening", 0.0) > FORESHORTENING_TOLERANCE:
@@ -481,7 +494,10 @@ def report(fits: dict[str, dict], mode: str, diagnostics: dict | None = None) ->
             print()
 
     if len(flexor) > 1:
-        print(f"Spread across fingers: Flexor {np.ptp(flexor):.4f}, DIP {np.ptp(dip):.4f}.")
+        spread = f"Flexor {np.ptp(flexor):.4f}"
+        if np.all(np.isfinite(dip)):
+            spread += f", DIP {np.ptp(dip):.4f}"
+        print(f"Spread across fingers: {spread}.")
         print("Wider than the per-finger error bars means the rig moved between")
         print("runs, not that the fingers differ.")
         print()
@@ -491,7 +507,11 @@ def report(fits: dict[str, dict], mode: str, diagnostics: dict | None = None) ->
     print()
     print("  coupled:")
     print(f"    Flexor: {{driver: Pitch, multiplier: {np.mean(flexor):.4f}}}")
-    print(f"    DIP: {{driver: Flexor, multiplier: {np.mean(dip):.4f}}}")
+    if np.all(np.isfinite(dip)):
+        print(f"    DIP: {{driver: Flexor, multiplier: {np.mean(dip):.4f}}}")
+    else:
+        print("    DIP: {driver: Flexor, multiplier: 1.0}   # NOT measured -- "
+              "upstream's CAD value, left as it was")
     return 0
 
 

@@ -176,8 +176,14 @@ fingertip triangulation only manages +/-0.07. Each finger's three flexion axes
 are exactly parallel, so one view along the palm's y axis reads all three at
 once, within 0.4 degrees of projection error at worst, and no servo angle is
 needed -- the knuckle angle comes from the same photo.
-`scripts/motion/fit_finger_coupling.py --from-points --template` starts the
-file; the same script documents the procedure and does the fit.
+Better still, the joints need not be clicked at all: every one runs on a bearing
+whose dark ring a circle detector finds, so
+`scripts/motion/track_finger_joints.py` reads the angles straight out of a video
+of the sweep. It measures `Flexor <- Pitch`, which is the ratio worth measuring
+-- `DIP <- Flexor` already comes from the vendor's CAD. Clamp the finger and fix
+the camera: in a handheld clip the proximal-to-middle phalanx length ratio, a
+constant of the hardware, ranged over 0.63 to 0.88, which is the foreshortening
+measuring itself.
 
 **A ratio only describes free space.** The fingers are tendon-driven, so under
 contact the proximal joint stops at the object and the distal ones keep closing.
