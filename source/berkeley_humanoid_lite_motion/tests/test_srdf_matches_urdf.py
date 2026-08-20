@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 
 import pytest
 
-from berkeley_humanoid_lite_motion.models import MODELS, urdf
+from berkeley_humanoid_lite_motion.models import urdf
 
 from conftest import REPO
 
