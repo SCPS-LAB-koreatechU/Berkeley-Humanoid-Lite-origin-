@@ -43,13 +43,15 @@ not committed — both are CC BY-NC-SA 4.0 and this repo is MIT.
 | `./run_demo.sh model:=stock` | original end effectors |
 | `./run_demo.sh use_rviz:=false` | headless, for tests and hardware |
 
-URDF only, one slider per joint, no MoveIt:
+URDF only, one slider per joint, no MoveIt (source the workspace first, as at
+the top of this file -- an unsourced shell reports the package as not found):
 
 ```bash
-ros2 launch berkeley_humanoid_lite_description display.launch.py model:=dexhand
+ros2 launch berkeley_humanoid_lite_description display.launch.py
 ```
 
-`model:=` there is `stock`, `dexhand` or `tuning`.
+`model:=` there is `v1arm` (the default and the robot), `dexhand`, `stock` or
+`tuning`.
 
 ---
 
@@ -124,6 +126,7 @@ The one transform still unmeasured. Load the slider model and drag the six
 ```bash
 ros2 launch berkeley_humanoid_lite_description display.launch.py model:=tuning
 ```
+
 
 ```bash
 ros2 run berkeley_humanoid_lite_description read_mount.py --watch

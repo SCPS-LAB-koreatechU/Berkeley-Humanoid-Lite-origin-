@@ -102,8 +102,17 @@ from the goal-state dropdown. `both_arms` plans in joint space.
 URDF-only sanity check, a slider per joint and no MoveIt involved:
 
 ```bash
-ros2 launch berkeley_humanoid_lite_description display.launch.py model:=dexhand
+cd ros2_ws
+source /opt/ros/humble/setup.bash && source install/setup.bash
+ros2 launch berkeley_humanoid_lite_description display.launch.py
 ```
+
+Sourcing `install/setup.bash` is the step to remember. Without it `ros2` only
+searches `/opt/ros/humble` and reports the package as not found, which reads
+like a build failure rather than an unsourced shell. `run_demo.sh` does it for
+you; the launch files here do not.
+
+`model:=` selects `v1arm` (the default), `dexhand`, `stock` or `tuning`.
 
 Models there are `stock`, `dexhand` and `tuning`.
 
@@ -273,6 +282,8 @@ does *not* fix is the standoff from the forearm and which way the palm faces.
 To dial it in, load the tuning model and drag the six `dexhand_mount_*` sliders:
 
 ```bash
+cd ros2_ws
+source /opt/ros/humble/setup.bash && source install/setup.bash
 ros2 launch berkeley_humanoid_lite_description display.launch.py model:=tuning
 ```
 
