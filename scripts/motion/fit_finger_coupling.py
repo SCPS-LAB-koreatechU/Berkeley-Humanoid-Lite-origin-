@@ -151,6 +151,19 @@ GENERATED = REPO / "ros2_ws/src/berkeley_humanoid_lite_description/urdf/berkeley
 CURVATURE_ALPHA = 0.05
 
 
+def pitch_is_absolute(path: Path) -> bool:
+    """Whether the file marks its pitch column as an image direction.
+
+    `track_finger_joints.py` writes `pitch_reference` so the two tools cannot
+    disagree about what the numbers mean -- a mismatch there would silently fit
+    the wrong model rather than fail.
+    """
+    with path.open(newline="") as handle:
+        for row in csv.DictReader(handle):
+            return (row.get("pitch_reference") or "").strip() == "absolute"
+    return False
+
+
 def read_csv(path: Path, columns: list[str]) -> dict[str, np.ndarray]:
     """{finger: (N, len(columns)) float array}, validated and grouped."""
     rows = defaultdict(list)
@@ -354,12 +367,48 @@ def check_curvature(driver: np.ndarray, driven: np.ndarray) -> tuple[float, floa
     return float(stats.f.sf(f_statistic, extra, n - CURVATURE_DEGREE - 1)), departure
 
 
-def fit_from_angles(data: dict[str, np.ndarray], to_radians: float) -> dict[str, dict]:
-    """Fit both stages per finger from measured joint angles."""
+def fit_line(driver: np.ndarray, driven: np.ndarray) -> tuple[float, float, float, float]:
+    """Slope, its 1-sigma, the intercept, and the residual RMS.
+
+    For angles measured against the image rather than the palm. The knuckle
+    angle is then the proximal phalanx's direction minus the palm's, and the
+    palm's is an unknown constant, so
+
+        flexor = ratio * (direction - palm)
+
+    is a straight line whose slope is the ratio and whose intercept is
+    -ratio * palm. Fitting the constant out is what lets the module translate
+    around the frame during a sweep, which is otherwise fatal.
+    """
+    keep = np.isfinite(driver) & np.isfinite(driven)
+    x, y = driver[keep], driven[keep]
+    if len(x) < 3:
+        raise SystemExit("need at least three poses to solve for the palm direction")
+    A = np.stack([x, np.ones(len(x))], axis=1)
+    (slope, intercept), *_ = np.linalg.lstsq(A, y, rcond=None)
+    residual = y - (slope * x + intercept)
+    rms = float(np.sqrt(np.mean(residual ** 2)))
+    spread = np.sqrt(np.sum((x - x.mean()) ** 2))
+    sigma = rms / spread if spread > 1e-9 else np.inf
+    return float(slope), float(sigma), float(intercept), rms
+
+
+def fit_from_angles(data: dict[str, np.ndarray], to_radians: float,
+                    absolute: bool = False) -> dict[str, dict]:
+    """Fit both stages per finger from measured joint angles.
+
+    `absolute` says the pitch column is an image direction rather than a joint
+    angle, so the palm's orientation is solved for alongside the ratio.
+    """
     out = {}
     for finger, rows in data.items():
         pitch, flexor, dip = (rows[:, i] * to_radians for i in range(3))
-        f_slope, f_sigma, f_rms = fit_ratio(pitch, flexor)
+        if absolute:
+            f_slope, f_sigma, intercept, f_rms = fit_line(pitch, flexor)
+            palm = -intercept / f_slope if abs(f_slope) > 1e-9 else np.nan
+        else:
+            f_slope, f_sigma, f_rms = fit_ratio(pitch, flexor)
+            palm = np.nan
         if np.all(np.isnan(dip)):
             # The distal stage was not measured. Reported as such rather than
             # fitted to nothing; upstream's own CAD already declares it at 1.0.
@@ -370,6 +419,7 @@ def fit_from_angles(data: dict[str, np.ndarray], to_radians: float) -> dict[str,
             "flexor": (f_slope, f_sigma),
             "dip": (d_slope, d_sigma),
             "rms_deg": np.degrees(max(f_rms, d_rms)),
+            "palm_deg": np.degrees(palm),
             "samples": len(rows),
         }
     return out
@@ -460,6 +510,15 @@ def report(fits: dict[str, dict], mode: str, diagnostics: dict | None = None) ->
     dip = np.array([fits[f]["dip"][0] for f in fits])
     print()
 
+    palm = np.array([fits[f].get("palm_deg", np.nan) for f in fits])
+    if np.any(np.isfinite(palm)):
+        print("Palm direction was solved for rather than given: "
+              + ", ".join(f"{p:+.1f}" for p in palm if np.isfinite(palm).all())
+              + " deg in the image.")
+        print("Those should agree across fingers to within a degree or two; if")
+        print("they do not, the module was rotating during the sweep.")
+        print()
+
     if diagnostics and diagnostics.get("foreshortening", 0.0) > FORESHORTENING_TOLERANCE:
         print("!!  The camera is not square to the finger. Clicked phalanx lengths")
         print(f"    disagree with the model's by {diagnostics['foreshortening'] * 100:.0f}%, "
@@ -527,6 +586,10 @@ def main() -> int:
                              "in the palm frame, rather than joint angles")
     parser.add_argument("--radians", action="store_true",
                         help="angles are in radians (default: degrees)")
+    parser.add_argument("--absolute-pitch", action="store_true",
+                        help="the pitch column is an image direction, not a joint "
+                             "angle; solve for the palm orientation too. Set "
+                             "automatically when the file says so")
     parser.add_argument("--template", action="store_true",
                         help="write an empty measurement file to fill in, and exit")
     parser.add_argument("--poses", type=int, default=9,
@@ -561,8 +624,9 @@ def main() -> int:
 
     data = read_csv(args.measurements, ["pitch", "flexor", "dip"])
     to_radians = 1.0 if args.radians else np.pi / 180.0
-    return report(fit_from_angles(data, to_radians), "angles",
-                  pooled_diagnostics(data, to_radians))
+    absolute = args.absolute_pitch or pitch_is_absolute(args.measurements)
+    diagnostics = None if absolute else pooled_diagnostics(data, to_radians)
+    return report(fit_from_angles(data, to_radians, absolute), "angles", diagnostics)
 
 
 if __name__ == "__main__":

@@ -54,7 +54,7 @@ def render(pitch, decoys=(), blur=0):
 
 def test_finds_the_three_bearings(tracker):
     image, truth = render(0.5)
-    found = tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
+    found, _ = tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
     assert found is not None
     assert np.allclose(found, truth, atol=3.0)
 
@@ -64,7 +64,7 @@ def test_ignores_circles_that_are_not_finger_shaped(tracker):
     has to be picked by shape, not by being the only one."""
     decoys = [((800, 80), 16), ((820, 140), 14), ((760, 200), 18), ((60, 60), 15)]
     image, truth = render(0.5, decoys=decoys)
-    found = tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
+    found, _ = tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
     assert found is not None
     assert np.allclose(found, truth, atol=3.0)
 
@@ -74,7 +74,7 @@ def test_a_frame_with_no_finger_is_rejected(tracker):
     for centre, radius in (((300, 300), 15), ((500, 300), 15), ((700, 300), 15)):
         cv2.circle(image, centre, radius, (60, 60, 60), 4)
     # Evenly spaced circles are a 1.0 length ratio, nothing like a finger's 0.67.
-    assert tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)) is None
+    assert tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))[0] is None
 
 
 def test_chain_order_survives_a_folded_finger(tracker):
@@ -104,7 +104,7 @@ def test_a_swept_sequence_recovers_the_ratio(tracker, blur):
     pitches, flexors = [], []
     for pitch in np.linspace(0.05, 0.95, 12):
         image, _ = render(pitch, blur=blur)
-        found = tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
+        found, _ = tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))
         if found is None:
             continue
         measured_pitch, measured_flexor, _ = tracker.measure(found, BASE)
@@ -137,4 +137,4 @@ def test_a_view_of_the_finger_from_behind_finds_nothing(tracker):
     cv2.line(image, (300, 400), (700, 380), (255, 255, 255), 40)
     for x in (430, 560):
         cv2.line(image, (x, 380), (x, 420), (60, 60, 60), 3)
-    assert tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)) is None
+    assert tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY))[0] is None
