@@ -58,9 +58,17 @@ Variable 'R_Index_Yaw' is not known to model 'berkeley-humanoid-lite'
 That is a domain collision, not a configuration error. The script refuses to run
 on domain 0 for this reason.
 
-**`v1arm` is the robot.** The build is a DexHand V1 forearm and 3-DOF wrist
-carrying a DexHand V2 hand — "V1 with the fingers swapped for V2", as a
-kinematic chain — and `v1arm` is the only generated model that is that. It is
+**`v1arm` is the robot.** The build is a DexHand V1 forearm, wrist *and
+palm*, carrying DexHand V2 digit assemblies — that is what "V1 with the fingers
+swapped for V2" is as a kinematic chain — and `v1arm` is the only generated
+model that is that.
+
+The V1 palm is four bulk pieces bolted in a row plus a cover plate, and the
+third wrist joint drives the first of them directly, as upstream intends. Each
+V2 digit is bolted to the bulk that carried V1's own. `hand.palm` in
+`description/config/arm_attachment.yaml` chooses between that and the V2 palm,
+which is one printed part carrying all five digits; `dexhand` still uses the
+latter. It is
 the default everywhere now: the MoveIt demo, the RViz sanity check, and the
 measurement scripts under `scripts/motion/`. They had drifted, with MoveIt
 planning against `v1arm` while the scripts analysed the wristless `dexhand` and
@@ -136,8 +144,10 @@ three after changing anything structural — `include_legs`, the mount, the wris
 
 `vendor/dexhand_v1_description/` holds a trimmed copy of
 [iotdesignshop/dexhand_description](https://github.com/iotdesignshop/dexhand_description)
-— the two URDFs and the forearm/wrist meshes only. V1 finger meshes are omitted
-because this build uses **V2** fingers.
+— the two URDFs and the meshes this build needs: the forearm, the two wrist
+halves, and the palm (four bulk pieces and a cover plate, per side, separately
+authored rather than mirrored). V1 *finger* meshes are omitted because the
+digits are **V2**.
 
 `generate_urdf.py` reads the wrist kinematics out of those URDFs rather than
 hard-coding them, per side, because the left variant is separately authored and

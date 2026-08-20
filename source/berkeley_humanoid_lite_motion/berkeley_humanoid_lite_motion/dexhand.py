@@ -35,11 +35,51 @@ ACTUATED_JOINTS = tuple(
 #: hand has. Grasp reasoning needs its tip as a fixed point in the palm frame.
 THUMB_TIP_FRAME = "Thumb_Tip_1"
 
-PALM_FRAME = "base_link"
+#: The V2 hand's own palm link. Only correct when the digits are mounted on a V2
+#: palm; with the V1 palm they sit on four separate bulk pieces and there is no
+#: such link. `HandModel` derives the frame instead -- see `palm_frame`.
+V2_PALM_FRAME = "base_link"
+PALM_FRAME = V2_PALM_FRAME
 
 
 def tip_frame(finger: str) -> str:
     return f"R_{finger}_tip_frame"
+
+
+def palm_frame(chain: Chain, joint_names=ACTUATED_JOINTS) -> str:
+    """The link the fingers are all measured from, derived from the model.
+
+    The lowest common ancestor of the links the finger yaw joints hang off. On a
+    V2 palm that is its one printed part; on a V1 palm the digits sit on four
+    separate bulk pieces bolted in a row, and the answer is the first of them --
+    the piece the wrist drives. Deriving it rather than naming `base_link` is
+    what lets the same code measure either build.
+    """
+    mounts = [chain.joints[name].parent for name in joint_names if name.endswith("_Yaw")]
+    if not mounts:
+        raise KeyError("no yaw joints; cannot tell where the fingers are mounted")
+
+    def ancestry(link: str) -> list[str]:
+        out, seen = [link], {link}
+        while (joint := chain.parent_of.get(link)) is not None:
+            link = chain.joints[joint].parent
+            if link in seen:
+                break
+            out.append(link)
+            seen.add(link)
+        return out
+
+    shared = set(ancestry(mounts[0]))
+    for mount in mounts[1:]:
+        shared &= set(ancestry(mount))
+    if not shared:
+        raise KeyError(f"finger mounts {mounts} share no ancestor")
+    # The lowest of the common ancestors is the deepest in the first mount's
+    # own chain, which runs child-to-root.
+    for link in ancestry(mounts[0]):
+        if link in shared:
+            return link
+    raise KeyError("unreachable")
 
 
 @dataclass
@@ -48,7 +88,11 @@ class HandModel:
 
     chain: Chain
     joint_names: tuple[str, ...] = ACTUATED_JOINTS
-    palm: str = PALM_FRAME
+    palm: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.palm is None:
+            self.palm = palm_frame(self.chain, self.joint_names)
 
     @classmethod
     def from_urdf(cls, path: str | Path) -> "HandModel":
@@ -87,6 +131,11 @@ class HandModel:
     def thumb_tip(self) -> np.ndarray:
         """The frozen thumb tip in the palm frame. Constant by construction."""
         return self.chain.position(THUMB_TIP_FRAME, self.palm)
+
+    @property
+    def palm_is_v1(self) -> bool:
+        """Whether the digits sit on the V1 bulk chain rather than a V2 palm."""
+        return self.palm != V2_PALM_FRAME
 
     def fingertip_cloud(self, pitch_steps: int = 30, yaw_steps: int = 9) -> np.ndarray:
         """(N, 3) every fingertip position the eight servos can realise.

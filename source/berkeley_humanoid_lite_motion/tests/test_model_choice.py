@@ -44,17 +44,29 @@ def test_every_named_model_exists():
 
 
 def test_the_hand_is_the_same_hand_in_every_model_that_has_one():
-    """Measurements are made on one model and used with another, so the finger
-    geometry has to be identical -- otherwise a coupling ratio fitted against
-    `dexhand` would quietly not apply to the robot."""
+    """Measurements are made on one model and used with another, so the fingers
+    have to be identical -- otherwise a coupling ratio fitted against `dexhand`
+    would quietly not apply to the robot.
+
+    Each finger is compared in its own root frame. The two models mount the
+    digits differently on purpose -- v1arm on the V1 bulk chain, dexhand on the
+    V2 palm -- so palm-frame positions are expected to differ; the finger is
+    what must not.
+    """
     reference = HandModel.from_urdf(urdf("v1arm"))
     other = HandModel.from_urdf(urdf("dexhand"))
     assert reference.joint_names == other.joint_names
+    assert reference.palm != other.palm
+
     rng = np.random.default_rng(0)
     lower, upper = reference.limits
     for _ in range(5):
-        q = rng.uniform(lower, upper)
-        assert np.allclose(reference.fingertips(q), other.fingertips(q), atol=1e-12)
+        q = dict(zip(reference.joint_names, rng.uniform(lower, upper)))
+        for finger in FINGERS:
+            root = f"{finger}_Knuckle_Cross_1"
+            tip = f"R_{finger}_tip_frame"
+            assert np.allclose(reference.chain.position(tip, root, q),
+                               other.chain.position(tip, root, q), atol=1e-12)
 
 
 def test_both_hands_couple_the_same_way():

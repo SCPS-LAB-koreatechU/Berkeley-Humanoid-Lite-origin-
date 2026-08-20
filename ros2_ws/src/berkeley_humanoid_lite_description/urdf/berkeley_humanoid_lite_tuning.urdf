@@ -459,173 +459,133 @@
     <axis xyz="-1 0 0" />
     <limit lower="-0.436332" upper="0.436332" effort="100" velocity="100" />
   </joint>
-  <link name="arm_right_wrist_tip" />
-  <joint name="arm_right_wrist_pitch_upper_joint" type="revolute">
-    <parent link="arm_right_wrist_upper" />
-    <child link="arm_right_wrist_tip" />
-    <origin xyz="0.012 0.021 0.023266" rpy="0 0 0" />
-    <axis xyz="-0 -1 -0" />
-    <limit lower="-0.349066" upper="0.349066" effort="100" velocity="100" />
-  </joint>
-  <material name="silver">
-    <color rgba="0.700 0.700 0.700 1.000" />
-  </material>
-  <gazebo>
-    <plugin filename="libgazebo_ros_control.so" name="control" />
-  </gazebo>
-  <gazebo reference="base_link">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-    <gravity>true</gravity>
-  </gazebo>
-  <gazebo reference="Index_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Middle_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Index_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Middle_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Index_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Midle_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Prox_KC_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Dist_KC_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Index_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Middle_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <link name="base_link">
+  <link name="arm_right_index_bulk">
     <inertial>
-      <origin rpy="0 0 0" xyz="0.007689524166402843 -0.0014012994166675186 0.03600705995032628" />
-      <mass value="2.5693559159130035" />
-      <inertia ixx="0.003206" ixy="4.6e-05" ixz="5.9e-05" iyy="0.001945" iyz="1.6e-05" izz="0.002103" />
+      <origin rpy="0 0 0" xyz="0.0019538368757692874 0.005732502869548347 0.0431073978685812" />
+      <mass value="0.0166988891" />
+      <inertia ixx="1.76917197e-05" ixy="-0" ixz="-1.10573248e-06" iyy="1.80076433e-05" iyz="-9.47770701e-07" izz="1.26369427e-06" />
     </inertial>
     <visual>
-      <origin rpy="0 0 0" xyz="0 0 0" />
+      <origin rpy="0 0 0" xyz="0.01198 -0.0203 -0.255266" />
       <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/base_link.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/index_bulk_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
       <material name="silver" />
     </visual>
     <collision>
-      <origin rpy="0 0 0" xyz="0 0 0" />
+      <origin rpy="0 0 0" xyz="0.01198 -0.0203 -0.255266" />
       <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/base_link.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/index_bulk_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
+  <joint name="arm_right_wrist_pitch_upper_joint" type="revolute">
+    <parent link="arm_right_wrist_upper" />
+    <child link="arm_right_index_bulk" />
+    <origin xyz="0.012 0.021 0.023266" rpy="0 0 0" />
+    <axis xyz="-0 -1 -0" />
+    <limit lower="-0.349066" upper="0.349066" effort="100" velocity="100" />
+  </joint>
+  <link name="arm_right_middle_bulk">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.010646950026404926 -0.0158135798135519 0.030689623412747002" />
+      <mass value="0.0366465513" />
+      <inertia ixx="4.07541401e-05" ixy="-2.21146497e-06" ixz="6.31847134e-06" iyy="4.2333758e-05" iyz="6.6343949e-06" izz="1.12152866e-05" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.01198 -0.0263 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/middle_bulk_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.01198 -0.0263 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/middle_bulk_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="arm_right_ring_bulk">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.003391811603104299 -0.010251243243741267 0.052778064056847374" />
+      <mass value="0.0151464727" />
+      <inertia ixx="1.1689172e-05" ixy="1.57961783e-07" ixz="-1.10573248e-06" iyy="1.1689172e-05" iyz="1.26369427e-06" izz="1.10573248e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.01198 0.0027 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/ring_bulk_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.01198 0.0027 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/ring_bulk_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="arm_right_hand_cover">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0009953682797510938 -0.04095438331848681 0.03842886174531379" />
+      <mass value="0.0276756412" />
+      <inertia ixx="4.75464968e-05" ixy="2.52738854e-06" ixz="1.57961783e-07" iyy="2.48e-05" iyz="-3.94904459e-06" izz="3.80687898e-05" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.01198 -0.0383 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/hand-cover_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.01198 -0.0383 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/hand-cover_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="arm_right_pinky_bulk">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0027271468848747184 -0.022196857115917325 0.03641088783645313" />
+      <mass value="0.0180357113" />
+      <inertia ixx="1.7533758e-05" ixy="1.57961783e-07" ixz="-1.57961783e-06" iyy="1.76917197e-05" iyz="2.05350318e-06" izz="1.57961783e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.01198 0.008743 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/pinky_bulk_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.01198 0.008743 -0.255266" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/right/pinky_bulk_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="arm_right_middle_bulk" type="fixed">
+    <parent link="arm_right_index_bulk" />
+    <child link="arm_right_middle_bulk" />
+    <origin xyz="0 0.006 0" rpy="0 0 0" />
+  </joint>
+  <joint name="arm_right_ring_bulk" type="fixed">
+    <parent link="arm_right_middle_bulk" />
+    <child link="arm_right_ring_bulk" />
+    <origin xyz="0 -0.029 0" rpy="0 0 0" />
+  </joint>
+  <joint name="arm_right_hand_cover" type="fixed">
+    <parent link="arm_right_middle_bulk" />
+    <child link="arm_right_hand_cover" />
+    <origin xyz="0 0.012 0" rpy="0 0 0" />
+  </joint>
+  <joint name="arm_right_pinky_bulk" type="fixed">
+    <parent link="arm_right_ring_bulk" />
+    <child link="arm_right_pinky_bulk" />
+    <origin xyz="0 -0.006043 0" rpy="0 0 0" />
+  </joint>
   <link name="Index_Knuckle_1">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.005617566441979023 -0.004263081858872926 0.024459068475414014" />
@@ -643,66 +603,6 @@
       <origin rpy="0 0 0" xyz="-0.010748 -0.034561 -0.088928" />
       <geometry>
         <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Index_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Middle_Knuckle_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.0053423492763846146 -0.004751533136442774 0.02443132246394987" />
-      <mass value="0.057232258646826684" />
-      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.0095 -0.01205 -0.094983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.0095 -0.01205 -0.094983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Ring_Knuckle_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.00499536472398323 -0.0051981437287493305 0.024413654590863074" />
-      <mass value="0.057232258646826684" />
-      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.010613 0.010934 -0.091111" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.010613 0.010934 -0.091111" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Pinky_Knuckle_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.003880364603590236 -0.005628060022037279 0.02452073099863339" />
-      <mass value="0.057232258646826684" />
-      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.013596 0.032422 -0.082783" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.013596 0.032422 -0.082783" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
@@ -726,66 +626,6 @@
       </geometry>
     </collision>
   </link>
-  <link name="Middle_Middle_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.000748200575903267 -0.007382647677029439 0.014078898502378867" />
-      <mass value="0.029055618634630877" />
-      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.0055 -0.0147 -0.139983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.0055 -0.0147 -0.139983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Ring_Middle_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.0001526105949676516 -0.007419627016542654 0.014078114365207756" />
-      <mass value="0.029055618634630877" />
-      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.006237 0.008642 -0.136096" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.006237 0.008642 -0.136096" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Pinky_Middle_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="0.0008844819690768356 -0.007397505520163869 0.01406265533428308" />
-      <mass value="0.029055618634630877" />
-      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.010161 0.030528 -0.127868" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.010161 0.030528 -0.127868" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
   <link name="Index_Tip_1">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.00031356817587347915 -0.0028006513879080056 0.007069716391178871" />
@@ -803,6 +643,102 @@
       <origin rpy="0 0 0" xyz="-0.006995 -0.03337 -0.163947" />
       <geometry>
         <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Index_Tip_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Index_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.008236768026459555 0.0007243561838455627 0.0016005367483632044" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.01778 -0.029123 -0.084894" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.01778 -0.029123 -0.084894" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="R_Index_tip_frame" />
+  <joint name="R_Index_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.003905 0.009839 0.084891" />
+    <parent link="arm_right_index_bulk" />
+    <child link="Index_Knuckle_Cross_1" />
+    <axis xyz="0.996149 -0.087538 -0.004875" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="R_Index_Pitch" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.007032 0.005438 0.004034" />
+    <parent link="Index_Knuckle_Cross_1" />
+    <child link="Index_Knuckle_1" />
+    <axis xyz="0.087537 0.996161 -0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="R_Index_Flexor" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.003532 0.002993 0.045018" />
+    <parent link="Index_Knuckle_1" />
+    <child link="Index_Middle_1" />
+    <axis xyz="0.087537 0.996161 -0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Index_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Index_DIP" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.000221 -0.004184 0.030001" />
+    <parent link="Index_Middle_1" />
+    <child link="Index_Tip_1" />
+    <axis xyz="0.087537 0.996161 -0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Index_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Index_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="Index_Tip_1" />
+    <child link="R_Index_tip_frame" />
+  </joint>
+  <link name="Middle_Knuckle_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.0053423492763846146 -0.004751533136442774 0.02443132246394987" />
+      <mass value="0.057232258646826684" />
+      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.0095 -0.01205 -0.094983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.0095 -0.01205 -0.094983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Middle_Middle_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.000748200575903267 -0.007382647677029439 0.014078898502378867" />
+      <mass value="0.029055618634630877" />
+      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.0055 -0.0147 -0.139983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.0055 -0.0147 -0.139983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
@@ -826,6 +762,102 @@
       </geometry>
     </collision>
   </link>
+  <link name="Middle_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.008276004065600816 3.318801662134663e-08 0.001560707543851736" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.017 -0.00725 -0.090983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.017 -0.00725 -0.090983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="R_Middle_tip_frame" />
+  <joint name="R_Middle_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.002866 -0.02 0.091" />
+    <parent link="arm_right_middle_bulk" />
+    <child link="Middle_Knuckle_Cross_1" />
+    <axis xyz="1.0 0.0 -0.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="R_Middle_Pitch" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.0075 0.0048 0.004" />
+    <parent link="Middle_Knuckle_Cross_1" />
+    <child link="Middle_Knuckle_1" />
+    <axis xyz="-0.0 1.0 0.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="R_Middle_Flexor" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.004 0.00265 0.045" />
+    <parent link="Middle_Knuckle_1" />
+    <child link="Middle_Middle_1" />
+    <axis xyz="-0.0 1.0 0.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Middle_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Middle_DIP" type="revolute">
+    <origin rpy="0 0 0" xyz="0.0 -0.0042 0.03" />
+    <parent link="Middle_Middle_1" />
+    <child link="Midle_Tip_1" />
+    <axis xyz="-0.0 1.0 0.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Middle_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Middle_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="Midle_Tip_1" />
+    <child link="R_Middle_tip_frame" />
+  </joint>
+  <link name="Ring_Knuckle_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.00499536472398323 -0.0051981437287493305 0.024413654590863074" />
+      <mass value="0.057232258646826684" />
+      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.010613 0.010934 -0.091111" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.010613 0.010934 -0.091111" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Ring_Middle_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.0001526105949676516 -0.007419627016542654 0.014078114365207756" />
+      <mass value="0.029055618634630877" />
+      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.006237 0.008642 -0.136096" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.006237 0.008642 -0.136096" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
   <link name="Ring_Tip_1">
     <inertial>
       <origin rpy="0 0 0" xyz="0.00011862144140123952 -0.0028181864528833943 0.007068122192193688" />
@@ -843,6 +875,102 @@
       <origin rpy="0 0 0" xyz="-0.006496 0.012826 -0.166097" />
       <geometry>
         <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Tip_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Ring_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.008250381618312196 -0.0007200297459291037 0.001531439351922348" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.018517 0.015063 -0.087139" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.018517 0.015063 -0.087139" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="R_Ring_tip_frame" />
+  <joint name="R_Ring_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.002001 -0.015638 0.087079" />
+    <parent link="arm_right_ring_bulk" />
+    <child link="Ring_Knuckle_Cross_1" />
+    <axis xyz="0.9962 0.08702 0.003551" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="R_Ring_Pitch" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.007904 0.004129 0.003972" />
+    <parent link="Ring_Knuckle_Cross_1" />
+    <child link="Ring_Knuckle_1" />
+    <axis xyz="-0.08702 0.996207 -0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="R_Ring_Flexor" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.004376 0.002292 0.044985" />
+    <parent link="Ring_Knuckle_1" />
+    <child link="Ring_Middle_1" />
+    <axis xyz="-0.08702 0.996207 -0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Ring_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Ring_DIP" type="revolute">
+    <origin rpy="0 0 0" xyz="0.000259 -0.004184 0.030001" />
+    <parent link="Ring_Middle_1" />
+    <child link="Ring_Tip_1" />
+    <axis xyz="-0.08702 0.996207 -0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Ring_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Ring_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="Ring_Tip_1" />
+    <child link="R_Ring_tip_frame" />
+  </joint>
+  <link name="Pinky_Knuckle_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.003880364603590236 -0.005628060022037279 0.02452073099863339" />
+      <mass value="0.057232258646826684" />
+      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.013596 0.032422 -0.082783" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.013596 0.032422 -0.082783" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="Pinky_Middle_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0008844819690768356 -0.007397505520163869 0.01406265533428308" />
+      <mass value="0.029055618634630877" />
+      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.010161 0.030528 -0.127868" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.010161 0.030528 -0.127868" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
@@ -866,6 +994,62 @@
       </geometry>
     </collision>
   </link>
+  <link name="Pinky_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="0 0 0" xyz="-0.008107321284378135 -0.0014762675960671087 0.001736108452129459" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="-0.021743 0.035807 -0.078606" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="-0.021743 0.035807 -0.078606" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="R_Pinky_tip_frame" />
+  <joint name="R_Pinky_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.001436 -0.030245 0.078763" />
+    <parent link="arm_right_pinky_bulk" />
+    <child link="Pinky_Knuckle_Cross_1" />
+    <axis xyz="0.983736 0.178359 -0.021263" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="R_Pinky_Pitch" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.008147 0.003385 0.004177" />
+    <parent link="Pinky_Knuckle_Cross_1" />
+    <child link="Pinky_Knuckle_1" />
+    <axis xyz="-0.178318 0.983965 0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="R_Pinky_Flexor" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.003435 0.001894 0.045085" />
+    <parent link="Pinky_Knuckle_1" />
+    <child link="Pinky_Middle_1" />
+    <axis xyz="-0.178318 0.983965 0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Pinky_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Pinky_DIP" type="revolute">
+    <origin rpy="0 0 0" xyz="0.001397 -0.004132 0.029977" />
+    <parent link="Pinky_Middle_1" />
+    <child link="Pinky_Tip_1" />
+    <axis xyz="-0.178318 0.983965 0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Pinky_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="R_Pinky_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="Pinky_Tip_1" />
+    <child link="R_Pinky_tip_frame" />
+  </joint>
   <link name="Thumb_Prox_KC_1">
     <inertial>
       <origin rpy="0 0 0" xyz="-0.005783732642998508 -0.005234605010581522 0.005230813563652258" />
@@ -946,86 +1130,6 @@
       </geometry>
     </collision>
   </link>
-  <link name="Index_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.008236768026459555 0.0007243561838455627 0.0016005367483632044" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.01778 -0.029123 -0.084894" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.01778 -0.029123 -0.084894" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Middle_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.008276004065600816 3.318801662134663e-08 0.001560707543851736" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.017 -0.00725 -0.090983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.017 -0.00725 -0.090983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Ring_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.008250381618312196 -0.0007200297459291037 0.001531439351922348" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.018517 0.015063 -0.087139" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.018517 0.015063 -0.087139" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="Pinky_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="0 0 0" xyz="-0.008107321284378135 -0.0014762675960671087 0.001736108452129459" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="0 0 0" xyz="-0.021743 0.035807 -0.078606" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="0 0 0" xyz="-0.021743 0.035807 -0.078606" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand/right/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
   <link name="Thumb_Knuckle_1">
     <inertial>
       <origin rpy="0 0 0" xyz="0.02583903164988658 -0.0052219176801160255 0.007683620189067311" />
@@ -1046,107 +1150,20 @@
       </geometry>
     </collision>
   </link>
-  <joint name="R_Index_Pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.007032 0.005438 0.004034" />
-    <parent link="Index_Knuckle_Cross_1" />
-    <child link="Index_Knuckle_1" />
-    <axis xyz="0.087537 0.996161 -0.000428" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="R_Middle_Pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.0075 0.0048 0.004" />
-    <parent link="Middle_Knuckle_Cross_1" />
-    <child link="Middle_Knuckle_1" />
-    <axis xyz="-0.0 1.0 0.0" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="R_Ring_Pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.007904 0.004129 0.003972" />
-    <parent link="Ring_Knuckle_Cross_1" />
-    <child link="Ring_Knuckle_1" />
-    <axis xyz="-0.08702 0.996207 -0.00031" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="R_Pinky_Pitch" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.008147 0.003385 0.004177" />
-    <parent link="Pinky_Knuckle_Cross_1" />
-    <child link="Pinky_Knuckle_1" />
-    <axis xyz="-0.178318 0.983965 0.003854" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="R_Index_Flexor" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.003532 0.002993 0.045018" />
-    <parent link="Index_Knuckle_1" />
-    <child link="Index_Middle_1" />
-    <axis xyz="0.087537 0.996161 -0.000428" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Index_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="R_Middle_Flexor" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.004 0.00265 0.045" />
-    <parent link="Middle_Knuckle_1" />
-    <child link="Middle_Middle_1" />
-    <axis xyz="-0.0 1.0 0.0" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Middle_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="R_Ring_Flexor" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.004376 0.002292 0.044985" />
-    <parent link="Ring_Knuckle_1" />
-    <child link="Ring_Middle_1" />
-    <axis xyz="-0.08702 0.996207 -0.00031" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Ring_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="R_Pinky_Flexor" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.003435 0.001894 0.045085" />
-    <parent link="Pinky_Knuckle_1" />
-    <child link="Pinky_Middle_1" />
-    <axis xyz="-0.178318 0.983965 0.003854" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Pinky_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="R_Index_DIP" type="revolute">
-    <origin rpy="0 0 0" xyz="-0.000221 -0.004184 0.030001" />
-    <parent link="Index_Middle_1" />
-    <child link="Index_Tip_1" />
-    <axis xyz="0.087537 0.996161 -0.000428" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Index_Flexor" multiplier="1" offset="0" />
-  </joint>
-  <joint name="R_Middle_DIP" type="revolute">
-    <origin rpy="0 0 0" xyz="0.0 -0.0042 0.03" />
-    <parent link="Middle_Middle_1" />
-    <child link="Midle_Tip_1" />
-    <axis xyz="-0.0 1.0 0.0" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Middle_Flexor" multiplier="1" offset="0" />
-  </joint>
-  <joint name="R_Ring_DIP" type="revolute">
-    <origin rpy="0 0 0" xyz="0.000259 -0.004184 0.030001" />
-    <parent link="Ring_Middle_1" />
-    <child link="Ring_Tip_1" />
-    <axis xyz="-0.08702 0.996207 -0.00031" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Ring_Flexor" multiplier="1" offset="0" />
-  </joint>
-  <joint name="R_Pinky_DIP" type="revolute">
-    <origin rpy="0 0 0" xyz="0.001397 -0.004132 0.029977" />
-    <parent link="Pinky_Middle_1" />
-    <child link="Pinky_Tip_1" />
-    <axis xyz="-0.178318 0.983965 0.003854" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="R_Pinky_Flexor" multiplier="1" offset="0" />
-  </joint>
   <joint name="R_Thumb_Yaw" type="fixed">
-    <origin rpy="0 0 0" xyz="0.042207 0.017744 -0.001358" />
-    <parent link="base_link" />
+    <origin rpy="0 0 0" xyz="0.026917 -0.00751 0.012735" />
+    <parent link="arm_right_middle_bulk" />
     <child link="Thumb_Prox_KC_1" />
   </joint>
   <joint name="R_Thumb_Roll" type="fixed">
     <origin rpy="0 0 0" xyz="-0.007225 -0.005798 0.00515" />
     <parent link="Thumb_Prox_KC_1" />
     <child link="Thumb_Dist_KC_1" />
+  </joint>
+  <joint name="R_Thumb_Pitch" type="fixed">
+    <origin rpy="0 0 0" xyz="0.005242 0.0081 0.011134" />
+    <parent link="Thumb_Dist_KC_1" />
+    <child link="Thumb_Knuckle_1" />
   </joint>
   <joint name="R_Thumb_Flexor" type="fixed">
     <origin rpy="0 0 0" xyz="0.046855 -0.010808 0.021295" />
@@ -1157,68 +1174,6 @@
     <origin rpy="0 0 0" xyz="0.031506 -0.000124 0.024645" />
     <parent link="Thumb_Middle_1" />
     <child link="Thumb_Tip_1" />
-  </joint>
-  <joint name="R_Index_Yaw" type="revolute">
-    <origin rpy="0 0 0" xyz="0.01778 0.029123 0.084894" />
-    <parent link="base_link" />
-    <child link="Index_Knuckle_Cross_1" />
-    <axis xyz="0.996149 -0.087538 -0.004875" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="R_Middle_Yaw" type="revolute">
-    <origin rpy="0 0 0" xyz="0.017 0.00725 0.090983" />
-    <parent link="base_link" />
-    <child link="Middle_Knuckle_Cross_1" />
-    <axis xyz="1.0 0.0 -0.0" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="R_Ring_Yaw" type="revolute">
-    <origin rpy="0 0 0" xyz="0.018517 -0.015063 0.087139" />
-    <parent link="base_link" />
-    <child link="Ring_Knuckle_Cross_1" />
-    <axis xyz="0.9962 0.08702 0.003551" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="R_Pinky_Yaw" type="revolute">
-    <origin rpy="0 0 0" xyz="0.021743 -0.035807 0.078606" />
-    <parent link="base_link" />
-    <child link="Pinky_Knuckle_Cross_1" />
-    <axis xyz="0.983736 0.178359 -0.021263" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="R_Thumb_Pitch" type="fixed">
-    <origin rpy="0 0 0" xyz="0.005242 0.0081 0.011134" />
-    <parent link="Thumb_Dist_KC_1" />
-    <child link="Thumb_Knuckle_1" />
-  </joint>
-  <link name="R_Index_tip_frame" />
-  <joint name="R_Index_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="Index_Tip_1" />
-    <child link="R_Index_tip_frame" />
-  </joint>
-  <link name="R_Middle_tip_frame" />
-  <joint name="R_Middle_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="Midle_Tip_1" />
-    <child link="R_Middle_tip_frame" />
-  </joint>
-  <link name="R_Ring_tip_frame" />
-  <joint name="R_Ring_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="Ring_Tip_1" />
-    <child link="R_Ring_tip_frame" />
-  </joint>
-  <link name="R_Pinky_tip_frame" />
-  <joint name="R_Pinky_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="Pinky_Tip_1" />
-    <child link="R_Pinky_tip_frame" />
-  </joint>
-  <joint name="arm_right_hand_interface" type="fixed">
-    <parent link="arm_right_wrist_tip" />
-    <child link="base_link" />
-    <origin xyz="0 0 0" rpy="0 0 0" />
   </joint>
   <link name="arm_left_mount" />
   <joint name="arm_left_forearm_mount" type="fixed">
@@ -1305,173 +1260,133 @@
     <axis xyz="1 -0 -0" />
     <limit lower="-0.436332" upper="0.436332" effort="100" velocity="100" />
   </joint>
-  <link name="arm_left_wrist_tip" />
-  <joint name="arm_left_wrist_pitch_upper_joint" type="revolute">
-    <parent link="arm_left_wrist_upper" />
-    <child link="arm_left_wrist_tip" />
-    <origin xyz="0.012 -0.021 0.023266" rpy="0 0 0" />
-    <axis xyz="-0 -1 -0" />
-    <limit lower="-0.349066" upper="0.349066" effort="100" velocity="100" />
-  </joint>
-  <material name="L_silver">
-    <color rgba="0.700 0.700 0.700 1.000" />
-  </material>
-  <gazebo>
-    <plugin filename="libgazebo_ros_control.so" name="control" />
-  </gazebo>
-  <gazebo reference="base_link">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-    <gravity>true</gravity>
-  </gazebo>
-  <gazebo reference="Index_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Middle_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Index_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Middle_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Index_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Midle_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Prox_KC_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Dist_KC_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Middle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Tip_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Index_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Middle_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Ring_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Pinky_Knuckle_Cross_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <gazebo reference="Thumb_Knuckle_1">
-    <material>Gazebo/Silver</material>
-    <mu1>0.2</mu1>
-    <mu2>0.2</mu2>
-    <selfCollide>true</selfCollide>
-  </gazebo>
-  <link name="L_base_link">
+  <link name="arm_left_index_bulk">
     <inertial>
-      <origin rpy="-0 0 -0" xyz="0.0076895241664 0.00140129941667 0.0360070599503" />
-      <mass value="2.5693559159130035" />
-      <inertia ixx="0.003206" ixy="4.6e-05" ixz="5.9e-05" iyy="0.001945" iyz="1.6e-05" izz="0.002103" />
+      <origin rpy="0 0 0" xyz="0.0019538273380790318 -0.005732494629266137 0.04310724149718498" />
+      <mass value="0.0166989673" />
+      <inertia ixx="1.76917197e-05" ixy="0" ixz="-1.10573248e-06" iyy="1.80076433e-05" iyz="9.47770701e-07" izz="1.26369427e-06" />
     </inertial>
     <visual>
-      <origin rpy="-0 0 -0" xyz="0 -0 0" />
+      <origin rpy="0 0 0" xyz="0.01188 0.0203 -0.255266" />
       <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/base_link.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/index_bulk_left_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
       <material name="silver" />
     </visual>
     <collision>
-      <origin rpy="-0 0 -0" xyz="0 -0 0" />
+      <origin rpy="0 0 0" xyz="0.01188 0.0203 -0.255266" />
       <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/base_link.stl" scale="0.001 0.001 0.001" />
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/index_bulk_left_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
+  <joint name="arm_left_wrist_pitch_upper_joint" type="revolute">
+    <parent link="arm_left_wrist_upper" />
+    <child link="arm_left_index_bulk" />
+    <origin xyz="0.012 -0.021 0.023266" rpy="0 0 0" />
+    <axis xyz="-0 -1 -0" />
+    <limit lower="-0.349066" upper="0.349066" effort="100" velocity="100" />
+  </joint>
+  <link name="arm_left_middle_bulk">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.010646693885552101 0.015813587520650638 0.0306892321585171" />
+      <mass value="0.036646533" />
+      <inertia ixx="4.07541401e-05" ixy="2.21146497e-06" ixz="6.31847134e-06" iyy="4.2333758e-05" iyz="-6.6343949e-06" izz="1.12152866e-05" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.011884 0.0263 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/middle_bulk_left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.011884 0.0263 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/middle_bulk_left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="arm_left_ring_bulk">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.003391564401113451 0.010251244048412596 0.05277766582318083" />
+      <mass value="0.0151464713" />
+      <inertia ixx="1.1689172e-05" ixy="-1.57961783e-07" ixz="-1.10573248e-06" iyy="1.1689172e-05" iyz="-1.26369427e-06" izz="1.10573248e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.011884 -0.0027 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/ring_bulk_left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.011884 -0.0027 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/ring_bulk_left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="arm_left_hand_cover">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.000995120561463822 0.040954383334705545 0.03842845525872829" />
+      <mass value="0.0276756413" />
+      <inertia ixx="4.75464968e-05" ixy="-2.52738854e-06" ixz="1.57961783e-07" iyy="2.48e-05" iyz="3.94904459e-06" izz="3.80687898e-05" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.011884 0.0383 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/hand-cover-left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.011884 0.0383 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/hand-cover-left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="arm_left_pinky_bulk">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0.0027268942355102316 0.022196506510013668 0.03641042544359541" />
+      <mass value="0.0180357349" />
+      <inertia ixx="1.7533758e-05" ixy="-1.57961783e-07" ixz="-1.57961783e-06" iyy="1.76917197e-05" iyz="-2.05350318e-06" izz="1.57961783e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0.011884 -0.009438 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/pinky_bulk_left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0.011884 -0.009438 -0.254814" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_v1/left/pinky_bulk_left_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="arm_left_middle_bulk" type="fixed">
+    <parent link="arm_left_index_bulk" />
+    <child link="arm_left_middle_bulk" />
+    <origin xyz="-4e-06 -0.006 -0.000452" rpy="0 0 0" />
+  </joint>
+  <joint name="arm_left_ring_bulk" type="fixed">
+    <parent link="arm_left_middle_bulk" />
+    <child link="arm_left_ring_bulk" />
+    <origin xyz="0 0.029 0" rpy="0 0 0" />
+  </joint>
+  <joint name="arm_left_hand_cover" type="fixed">
+    <parent link="arm_left_middle_bulk" />
+    <child link="arm_left_hand_cover" />
+    <origin xyz="0 -0.012 0" rpy="0 0 0" />
+  </joint>
+  <joint name="arm_left_pinky_bulk" type="fixed">
+    <parent link="arm_left_ring_bulk" />
+    <child link="arm_left_pinky_bulk" />
+    <origin xyz="0 0.006738 0" rpy="0 0 0" />
+  </joint>
   <link name="L_Index_Knuckle_1">
     <inertial>
       <origin rpy="-0 0 -0" xyz="-0.00561756644198 0.00426308185887 0.0244590684754" />
@@ -1489,66 +1404,6 @@
       <origin rpy="-0 0 -0" xyz="-0.010748 0.034561 -0.088928" />
       <geometry>
         <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Index_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Middle_Knuckle_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.00534234927638 0.00475153313644 0.0244313224639" />
-      <mass value="0.057232258646826684" />
-      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.0095 0.01205 -0.094983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.0095 0.01205 -0.094983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Ring_Knuckle_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.00499536472398 0.00519814372875 0.0244136545909" />
-      <mass value="0.057232258646826684" />
-      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.010613 -0.010934 -0.091111" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.010613 -0.010934 -0.091111" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Pinky_Knuckle_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.00388036460359 0.00562806002204 0.0245207309986" />
-      <mass value="0.057232258646826684" />
-      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.013596 -0.032422 -0.082783" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.013596 -0.032422 -0.082783" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
@@ -1572,66 +1427,6 @@
       </geometry>
     </collision>
   </link>
-  <link name="L_Middle_Middle_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.000748200575903 0.00738264767703 0.0140788985024" />
-      <mass value="0.029055618634630877" />
-      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.0055 0.0147 -0.139983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.0055 0.0147 -0.139983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Ring_Middle_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.000152610594968 0.00741962701654 0.0140781143652" />
-      <mass value="0.029055618634630877" />
-      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.006237 -0.008642 -0.136096" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.006237 -0.008642 -0.136096" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Pinky_Middle_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="0.000884481969077 0.00739750552016 0.0140626553343" />
-      <mass value="0.029055618634630877" />
-      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.010161 -0.030528 -0.127868" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.010161 -0.030528 -0.127868" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
   <link name="L_Index_Tip_1">
     <inertial>
       <origin rpy="-0 0 -0" xyz="-0.000313568175873 0.00280065138791 0.00706971639118" />
@@ -1649,6 +1444,102 @@
       <origin rpy="-0 0 -0" xyz="-0.006995 0.03337 -0.163947" />
       <geometry>
         <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Index_Tip_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Index_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.00823676802646 -0.000724356183846 0.00160053674836" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.01778 0.029123 -0.084894" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.01778 0.029123 -0.084894" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Index_tip_frame" />
+  <joint name="L_Index_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.006893 -0.0101 0.084839" />
+    <parent link="arm_left_index_bulk" />
+    <child link="L_Index_Knuckle_Cross_1" />
+    <axis xyz="-0.996149 -0.087538 0.004875" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="L_Index_Pitch" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.007032 -0.005438 0.004034" />
+    <parent link="L_Index_Knuckle_Cross_1" />
+    <child link="L_Index_Knuckle_1" />
+    <axis xyz="-0.087537 0.996161 0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="L_Index_Flexor" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.003532 -0.002993 0.045018" />
+    <parent link="L_Index_Knuckle_1" />
+    <child link="L_Index_Middle_1" />
+    <axis xyz="-0.087537 0.996161 0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Index_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Index_DIP" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.000221 0.004184 0.030001" />
+    <parent link="L_Index_Middle_1" />
+    <child link="L_Index_Tip_1" />
+    <axis xyz="-0.087537 0.996161 0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Index_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Index_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="L_Index_Tip_1" />
+    <child link="L_Index_tip_frame" />
+  </joint>
+  <link name="L_Middle_Knuckle_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.00534234927638 0.00475153313644 0.0244313224639" />
+      <mass value="0.057232258646826684" />
+      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.0095 0.01205 -0.094983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.0095 0.01205 -0.094983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Middle_Middle_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.000748200575903 0.00738264767703 0.0140788985024" />
+      <mass value="0.029055618634630877" />
+      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.0055 0.0147 -0.139983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.0055 0.0147 -0.139983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Middle_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
@@ -1672,6 +1563,102 @@
       </geometry>
     </collision>
   </link>
+  <link name="L_Middle_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.0082760040656 -3.31880166213e-08 0.00156070754385" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.017 0.00725 -0.090983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.017 0.00725 -0.090983" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Middle_tip_frame" />
+  <joint name="L_Middle_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.005866 0.02 0.091" />
+    <parent link="arm_left_middle_bulk" />
+    <child link="L_Middle_Knuckle_Cross_1" />
+    <axis xyz="-1 0 0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="L_Middle_Pitch" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.0075 -0.0048 0.004" />
+    <parent link="L_Middle_Knuckle_Cross_1" />
+    <child link="L_Middle_Knuckle_1" />
+    <axis xyz="0 1 -0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="L_Middle_Flexor" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.004 -0.00265 0.045" />
+    <parent link="L_Middle_Knuckle_1" />
+    <child link="L_Middle_Middle_1" />
+    <axis xyz="0 1 -0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Middle_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Middle_DIP" type="revolute">
+    <origin rpy="-0 0 -0" xyz="0 0.0042 0.03" />
+    <parent link="L_Middle_Middle_1" />
+    <child link="L_Midle_Tip_1" />
+    <axis xyz="0 1 -0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Middle_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Middle_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="L_Midle_Tip_1" />
+    <child link="L_Middle_tip_frame" />
+  </joint>
+  <link name="L_Ring_Knuckle_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.00499536472398 0.00519814372875 0.0244136545909" />
+      <mass value="0.057232258646826684" />
+      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.010613 -0.010934 -0.091111" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.010613 -0.010934 -0.091111" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Ring_Middle_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.000152610594968 0.00741962701654 0.0140781143652" />
+      <mass value="0.029055618634630877" />
+      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.006237 -0.008642 -0.136096" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.006237 -0.008642 -0.136096" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
   <link name="L_Ring_Tip_1">
     <inertial>
       <origin rpy="-0 0 -0" xyz="0.000118621441401 0.00281818645288 0.00706812219219" />
@@ -1689,6 +1676,102 @@
       <origin rpy="-0 0 -0" xyz="-0.006496 -0.012826 -0.166097" />
       <geometry>
         <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Tip_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Ring_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.00825038161831 0.000720029745929 0.00153143935192" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.018517 -0.015063 -0.087139" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.018517 -0.015063 -0.087139" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Ring_tip_frame" />
+  <joint name="L_Ring_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.00499 0.015899 0.087076" />
+    <parent link="arm_left_ring_bulk" />
+    <child link="L_Ring_Knuckle_Cross_1" />
+    <axis xyz="-0.9962 0.08702 -0.003551" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="L_Ring_Pitch" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.007904 -0.004129 0.003972" />
+    <parent link="L_Ring_Knuckle_Cross_1" />
+    <child link="L_Ring_Knuckle_1" />
+    <axis xyz="0.08702 0.996207 0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="L_Ring_Flexor" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.004376 -0.002292 0.044985" />
+    <parent link="L_Ring_Knuckle_1" />
+    <child link="L_Ring_Middle_1" />
+    <axis xyz="0.08702 0.996207 0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Ring_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Ring_DIP" type="revolute">
+    <origin rpy="-0 0 -0" xyz="0.000259 0.004184 0.030001" />
+    <parent link="L_Ring_Middle_1" />
+    <child link="L_Ring_Tip_1" />
+    <axis xyz="0.08702 0.996207 0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Ring_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Ring_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="L_Ring_Tip_1" />
+    <child link="L_Ring_tip_frame" />
+  </joint>
+  <link name="L_Pinky_Knuckle_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.00388036460359 0.00562806002204 0.0245207309986" />
+      <mass value="0.057232258646826684" />
+      <inertia ixx="1.2e-05" ixy="0.0" ixz="0.0" iyy="1.1e-05" iyz="0.0" izz="2e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.013596 -0.032422 -0.082783" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.013596 -0.032422 -0.082783" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Pinky_Middle_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="0.000884481969077 0.00739750552016 0.0140626553343" />
+      <mass value="0.029055618634630877" />
+      <inertia ixx="2e-06" ixy="0.0" ixz="-0.0" iyy="2e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.010161 -0.030528 -0.127868" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.010161 -0.030528 -0.127868" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Middle_1.stl" scale="0.001 0.001 0.001" />
       </geometry>
     </collision>
   </link>
@@ -1712,6 +1795,62 @@
       </geometry>
     </collision>
   </link>
+  <link name="L_Pinky_Knuckle_Cross_1">
+    <inertial>
+      <origin rpy="-0 0 -0" xyz="-0.00810732128438 0.00147626759607 0.00173610845213" />
+      <mass value="0.018067034327727577" />
+      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
+    </inertial>
+    <visual>
+      <origin rpy="-0 0 -0" xyz="-0.021743 -0.035807 -0.078606" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+      <material name="silver" />
+    </visual>
+    <collision>
+      <origin rpy="-0 0 -0" xyz="-0.021743 -0.035807 -0.078606" />
+      <geometry>
+        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="L_Pinky_tip_frame" />
+  <joint name="L_Pinky_Yaw" type="revolute">
+    <origin rpy="0 0 0" xyz="-0.00427 0.030808 0.078713" />
+    <parent link="arm_left_pinky_bulk" />
+    <child link="L_Pinky_Knuckle_Cross_1" />
+    <axis xyz="-0.983736 0.178359 0.021263" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
+  </joint>
+  <joint name="L_Pinky_Pitch" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.008147 -0.003385 0.004177" />
+    <parent link="L_Pinky_Knuckle_Cross_1" />
+    <child link="L_Pinky_Knuckle_1" />
+    <axis xyz="0.178318 0.983965 -0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+  </joint>
+  <joint name="L_Pinky_Flexor" type="revolute">
+    <origin rpy="-0 0 -0" xyz="-0.003435 -0.001894 0.045085" />
+    <parent link="L_Pinky_Knuckle_1" />
+    <child link="L_Pinky_Middle_1" />
+    <axis xyz="0.178318 0.983965 -0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Pinky_Pitch" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Pinky_DIP" type="revolute">
+    <origin rpy="-0 0 -0" xyz="0.001397 0.004132 0.029977" />
+    <parent link="L_Pinky_Middle_1" />
+    <child link="L_Pinky_Tip_1" />
+    <axis xyz="0.178318 0.983965 -0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Pinky_Flexor" multiplier="1" offset="0" />
+  </joint>
+  <joint name="L_Pinky_tip_fixed" type="fixed">
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
+    <parent link="L_Pinky_Tip_1" />
+    <child link="L_Pinky_tip_frame" />
+  </joint>
   <link name="L_Thumb_Prox_KC_1">
     <inertial>
       <origin rpy="-0 0 -0" xyz="-0.005783732643 0.00523460501058 0.00523081356365" />
@@ -1792,86 +1931,6 @@
       </geometry>
     </collision>
   </link>
-  <link name="L_Index_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.00823676802646 -0.000724356183846 0.00160053674836" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.01778 0.029123 -0.084894" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.01778 0.029123 -0.084894" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Index_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Middle_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.0082760040656 -3.31880166213e-08 0.00156070754385" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="0.0" ixz="-0.0" iyy="1e-06" iyz="0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.017 0.00725 -0.090983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.017 0.00725 -0.090983" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Middle_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Ring_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.00825038161831 0.000720029745929 0.00153143935192" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.018517 -0.015063 -0.087139" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.018517 -0.015063 -0.087139" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Ring_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
-  <link name="L_Pinky_Knuckle_Cross_1">
-    <inertial>
-      <origin rpy="-0 0 -0" xyz="-0.00810732128438 0.00147626759607 0.00173610845213" />
-      <mass value="0.018067034327727577" />
-      <inertia ixx="1e-06" ixy="-0.0" ixz="-0.0" iyy="1e-06" iyz="-0.0" izz="1e-06" />
-    </inertial>
-    <visual>
-      <origin rpy="-0 0 -0" xyz="-0.021743 -0.035807 -0.078606" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-      <material name="silver" />
-    </visual>
-    <collision>
-      <origin rpy="-0 0 -0" xyz="-0.021743 -0.035807 -0.078606" />
-      <geometry>
-        <mesh filename="package://berkeley_humanoid_lite_description/meshes_dexhand_left/Pinky_Knuckle_Cross_1.stl" scale="0.001 0.001 0.001" />
-      </geometry>
-    </collision>
-  </link>
   <link name="L_Thumb_Knuckle_1">
     <inertial>
       <origin rpy="-0 0 -0" xyz="0.0258390316499 0.00522191768012 0.00768362018907" />
@@ -1892,107 +1951,20 @@
       </geometry>
     </collision>
   </link>
-  <joint name="L_Index_Pitch" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.007032 -0.005438 0.004034" />
-    <parent link="L_Index_Knuckle_Cross_1" />
-    <child link="L_Index_Knuckle_1" />
-    <axis xyz="-0.087537 0.996161 0.000428" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="L_Middle_Pitch" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.0075 -0.0048 0.004" />
-    <parent link="L_Middle_Knuckle_Cross_1" />
-    <child link="L_Middle_Knuckle_1" />
-    <axis xyz="0 1 -0" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="L_Ring_Pitch" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.007904 -0.004129 0.003972" />
-    <parent link="L_Ring_Knuckle_Cross_1" />
-    <child link="L_Ring_Knuckle_1" />
-    <axis xyz="0.08702 0.996207 0.00031" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="L_Pinky_Pitch" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.008147 -0.003385 0.004177" />
-    <parent link="L_Pinky_Knuckle_Cross_1" />
-    <child link="L_Pinky_Knuckle_1" />
-    <axis xyz="0.178318 0.983965 -0.003854" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-  </joint>
-  <joint name="L_Index_Flexor" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.003532 -0.002993 0.045018" />
-    <parent link="L_Index_Knuckle_1" />
-    <child link="L_Index_Middle_1" />
-    <axis xyz="-0.087537 0.996161 0.000428" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Index_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="L_Middle_Flexor" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.004 -0.00265 0.045" />
-    <parent link="L_Middle_Knuckle_1" />
-    <child link="L_Middle_Middle_1" />
-    <axis xyz="0 1 -0" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Middle_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="L_Ring_Flexor" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.004376 -0.002292 0.044985" />
-    <parent link="L_Ring_Knuckle_1" />
-    <child link="L_Ring_Middle_1" />
-    <axis xyz="0.08702 0.996207 0.00031" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Ring_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="L_Pinky_Flexor" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.003435 -0.001894 0.045085" />
-    <parent link="L_Pinky_Knuckle_1" />
-    <child link="L_Pinky_Middle_1" />
-    <axis xyz="0.178318 0.983965 -0.003854" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Pinky_Pitch" multiplier="1" offset="0" />
-  </joint>
-  <joint name="L_Index_DIP" type="revolute">
-    <origin rpy="-0 0 -0" xyz="-0.000221 0.004184 0.030001" />
-    <parent link="L_Index_Middle_1" />
-    <child link="L_Index_Tip_1" />
-    <axis xyz="-0.087537 0.996161 0.000428" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Index_Flexor" multiplier="1" offset="0" />
-  </joint>
-  <joint name="L_Middle_DIP" type="revolute">
-    <origin rpy="-0 0 -0" xyz="0 0.0042 0.03" />
-    <parent link="L_Middle_Middle_1" />
-    <child link="L_Midle_Tip_1" />
-    <axis xyz="0 1 -0" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Middle_Flexor" multiplier="1" offset="0" />
-  </joint>
-  <joint name="L_Ring_DIP" type="revolute">
-    <origin rpy="-0 0 -0" xyz="0.000259 0.004184 0.030001" />
-    <parent link="L_Ring_Middle_1" />
-    <child link="L_Ring_Tip_1" />
-    <axis xyz="0.08702 0.996207 0.00031" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Ring_Flexor" multiplier="1" offset="0" />
-  </joint>
-  <joint name="L_Pinky_DIP" type="revolute">
-    <origin rpy="-0 0 -0" xyz="0.001397 0.004132 0.029977" />
-    <parent link="L_Pinky_Middle_1" />
-    <child link="L_Pinky_Tip_1" />
-    <axis xyz="0.178318 0.983965 -0.003854" />
-    <limit effort="100" lower="0" upper="0.95" velocity="100" />
-    <mimic joint="L_Pinky_Flexor" multiplier="1" offset="0" />
-  </joint>
   <joint name="L_Thumb_Yaw" type="fixed">
-    <origin rpy="-0 0 -0" xyz="0.042207 -0.017744 -0.001358" />
-    <parent link="L_base_link" />
+    <origin rpy="0 0 0" xyz="0.028048 0.005551 0.010472" />
+    <parent link="arm_left_middle_bulk" />
     <child link="L_Thumb_Prox_KC_1" />
   </joint>
   <joint name="L_Thumb_Roll" type="fixed">
     <origin rpy="-0 0 -0" xyz="-0.007225 0.005798 0.00515" />
     <parent link="L_Thumb_Prox_KC_1" />
     <child link="L_Thumb_Dist_KC_1" />
+  </joint>
+  <joint name="L_Thumb_Pitch" type="fixed">
+    <origin rpy="-0 0 -0" xyz="0.005242 -0.0081 0.011134" />
+    <parent link="L_Thumb_Dist_KC_1" />
+    <child link="L_Thumb_Knuckle_1" />
   </joint>
   <joint name="L_Thumb_Flexor" type="fixed">
     <origin rpy="-0 0 -0" xyz="0.046855 0.010808 0.021295" />
@@ -2003,67 +1975,5 @@
     <origin rpy="-0 0 -0" xyz="0.031506 0.000124 0.024645" />
     <parent link="L_Thumb_Middle_1" />
     <child link="L_Thumb_Tip_1" />
-  </joint>
-  <joint name="L_Index_Yaw" type="revolute">
-    <origin rpy="-0 0 -0" xyz="0.01778 -0.029123 0.084894" />
-    <parent link="L_base_link" />
-    <child link="L_Index_Knuckle_Cross_1" />
-    <axis xyz="-0.996149 -0.087538 0.004875" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="L_Middle_Yaw" type="revolute">
-    <origin rpy="-0 0 -0" xyz="0.017 -0.00725 0.090983" />
-    <parent link="L_base_link" />
-    <child link="L_Middle_Knuckle_Cross_1" />
-    <axis xyz="-1 0 0" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="L_Ring_Yaw" type="revolute">
-    <origin rpy="-0 0 -0" xyz="0.018517 0.015063 0.087139" />
-    <parent link="L_base_link" />
-    <child link="L_Ring_Knuckle_Cross_1" />
-    <axis xyz="-0.9962 0.08702 -0.003551" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="L_Pinky_Yaw" type="revolute">
-    <origin rpy="-0 0 -0" xyz="0.021743 0.035807 0.078606" />
-    <parent link="L_base_link" />
-    <child link="L_Pinky_Knuckle_Cross_1" />
-    <axis xyz="-0.983736 0.178359 0.021263" />
-    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
-  </joint>
-  <joint name="L_Thumb_Pitch" type="fixed">
-    <origin rpy="-0 0 -0" xyz="0.005242 -0.0081 0.011134" />
-    <parent link="L_Thumb_Dist_KC_1" />
-    <child link="L_Thumb_Knuckle_1" />
-  </joint>
-  <link name="L_Index_tip_frame" />
-  <joint name="L_Index_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="L_Index_Tip_1" />
-    <child link="L_Index_tip_frame" />
-  </joint>
-  <link name="L_Middle_tip_frame" />
-  <joint name="L_Middle_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="L_Midle_Tip_1" />
-    <child link="L_Middle_tip_frame" />
-  </joint>
-  <link name="L_Ring_tip_frame" />
-  <joint name="L_Ring_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="L_Ring_Tip_1" />
-    <child link="L_Ring_tip_frame" />
-  </joint>
-  <link name="L_Pinky_tip_frame" />
-  <joint name="L_Pinky_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
-    <parent link="L_Pinky_Tip_1" />
-    <child link="L_Pinky_tip_frame" />
-  </joint>
-  <joint name="arm_left_hand_interface" type="fixed">
-    <parent link="arm_left_wrist_tip" />
-    <child link="L_base_link" />
-    <origin xyz="0 -0 0" rpy="-0 0 -0" />
   </joint>
 </robot>

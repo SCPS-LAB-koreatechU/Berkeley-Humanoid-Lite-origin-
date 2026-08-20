@@ -66,6 +66,15 @@ V1_LINKS = {
     "right": ["forearm_1", "wrist_lower_1", "wrist_upper_1"],
     "left": ["forearm_left_1", "wrist_lower_1", "wrist_upper_1"],
 }
+# The V1 joint whose child is the palm. Upstream, the third wrist joint drives
+# the palm directly rather than through an intermediate frame.
+V1_PALM_DRIVER = "wrist_pitch_upper"
+# The V1 joint that carries each digit, and so where a V2 digit bolts on. Named
+# identically on both sides even though the links they connect are not.
+V1_DIGIT_MOUNTS = {
+    "Index": "index_yaw", "Middle": "middle_yaw",
+    "Ring": "ring_yaw", "Pinky": "pinky_yaw", "Thumb": "thumb_yaw",
+}
 OUTPUT_DIR = HERE / "urdf"
 
 # Every leg link, and by extension every joint that drives one.
@@ -547,10 +556,114 @@ def v1_link_name(side: str, index: int) -> str:
     return f"arm_{side}_" + ["forearm", "wrist_lower", "wrist_upper"][index]
 
 
+def v1_palm_link_name(side: str, upstream: str) -> str:
+    """Rename a V1 palm link per side; the two arms cannot share link names."""
+    return f"arm_{side}_" + upstream.replace("-", "_").replace("_left_1", "").replace("_1", "")
+
+
+def rewrite_v1_meshes(link: ET.Element) -> None:
+    for mesh in link.iter("mesh"):
+        mesh.set("filename", mesh.get("filename").replace(
+            "package://dexhand_description/meshes/",
+            f"package://{PACKAGE}/meshes_v1/",
+        ))
+        if "dexhand_description" in mesh.get("filename"):
+            raise SystemExit(f"unrewritten V1 mesh path: {mesh.get('filename')}")
+
+
+def load_v1_palm(side: str, config: dict) -> tuple[list[ET.Element], list[dict], dict]:
+    """The V1 palm: the bulk chain and its cover, plus where the digits mount.
+
+    Walked out of the description rather than listed here. The palm is whatever
+    hangs off `wrist_pitch_upper` through *fixed* joints -- four bolted bulk
+    pieces and a cover plate -- and the digits hang off it through revolute
+    ones, so following only the fixed joints separates the two without naming
+    either. A palm redesign upstream would be picked up rather than missed.
+
+    Returns the renamed links, the fixed joints holding them together, and
+    {digit: (parent link, origin element)} for the digit mounts.
+    """
+    root = ET.parse(DEXHAND_V1[side]).getroot()
+    joints = [j for j in root.iter("joint") if j.find("parent") is not None]
+    by_parent = {}
+    for joint in joints:
+        by_parent.setdefault(joint.find("parent").get("link"), []).append(joint)
+    by_name = {j.get("name"): j for j in joints}
+
+    driver = by_name.get(V1_PALM_DRIVER)
+    if driver is None:
+        raise SystemExit(f"{DEXHAND_V1[side]}: no joint named {V1_PALM_DRIVER}")
+    palm_root = driver.find("child").get("link")
+
+    factor = float(config["wrist"].get("structure_density_kgm3",
+                                       V1_SOURCE_DENSITY)) / V1_SOURCE_DENSITY
+
+    order, welds = [palm_root], []
+    queue = [palm_root]
+    while queue:
+        for joint in by_parent.get(queue.pop(0), []):
+            if joint.get("type") != "fixed":
+                continue
+            child = joint.find("child").get("link")
+            order.append(child)
+            welds.append({
+                "name": joint.get("name"),
+                "parent": joint.find("parent").get("link"),
+                "child": child,
+                "origin": joint.find("origin"),
+            })
+            queue.append(child)
+
+    links = []
+    for name in order:
+        source = root.find(f"link[@name='{name}']")
+        if source is None:
+            raise SystemExit(f"{DEXHAND_V1[side]}: no link named {name}")
+        link = copy.deepcopy(source)
+        link.set("name", v1_palm_link_name(side, name))
+        rewrite_v1_meshes(link)
+        scale_inertial(link, factor)
+        links.append(link)
+
+    mounts = {}
+    for digit, joint_name in V1_DIGIT_MOUNTS.items():
+        joint = by_name.get(joint_name)
+        if joint is None:
+            raise SystemExit(f"{DEXHAND_V1[side]}: no joint named {joint_name}")
+        mounts[digit] = (v1_palm_link_name(side, joint.find("parent").get("link")),
+                         joint.find("origin"))
+    return links, welds, mounts
+
+
+def subtree(root: ET.Element, start: str) -> tuple[list[ET.Element], list[ET.Element]]:
+    """Every link and joint below `start`, itself included, in document order."""
+    joints = [j for j in root.iter("joint") if j.find("parent") is not None]
+    by_parent = {}
+    for joint in joints:
+        by_parent.setdefault(joint.find("parent").get("link"), []).append(joint)
+
+    wanted, queue = {start}, [start]
+    kept_joints = []
+    while queue:
+        for joint in by_parent.get(queue.pop(0), []):
+            child = joint.find("child").get("link")
+            kept_joints.append(joint)
+            wanted.add(child)
+            queue.append(child)
+    kept_links = [link for link in root.iter("link") if link.get("name") in wanted]
+    return kept_links, kept_joints
+
+
 def build_wrist_chain(robot, side, config, parent):
-    """Graft the V1 forearm and wrist. Returns the link the hand attaches to."""
+    """Graft the V1 forearm, wrist and -- if configured -- the V1 palm.
+
+    Returns `(attachment, mounts)`. With a V2 palm, `attachment` is the frame
+    the V2 hand welds to and `mounts` is None. With a V1 palm the palm is part
+    of this chain, so `attachment` is its root and `mounts` says which bulk each
+    digit bolts to.
+    """
     if not config["wrist"].get("enabled", False):
-        return parent
+        return parent, None
 
     links, joints = load_v1_forearm(side, config)
 
@@ -561,13 +674,22 @@ def build_wrist_chain(robot, side, config, parent):
               links[0].get("name"), {"xyz": [0, 0, 0], "rpy": [0, 0, 0]})
     parent = links[0].get("name")
 
-    # Each wrist joint drives the next V1 link; the last one drives the hand,
-    # so it needs a frame of its own for the hand interface to hang off.
+    v1_palm = (config.get("hand") or {}).get("palm", "v2") == "v1"
+    palm_links, palm_welds, mounts = ([], [], None)
+    if v1_palm:
+        palm_links, palm_welds, mounts = load_v1_palm(side, config)
+
+    # Each wrist joint drives the next V1 link. What the last one drives depends
+    # on the palm: upstream it is the palm's first bulk, and with a V2 hand in
+    # its place it is a bare frame for the hand interface to hang off.
     for index, spec in enumerate(joints):
         if index + 1 < len(links):
             child_link = links[index + 1]
             robot.append(child_link)
             child = child_link.get("name")
+        elif v1_palm:
+            robot.append(palm_links[0])
+            child = palm_links[0].get("name")
         else:
             child = f"arm_{side}_wrist_tip"
             add_frame(robot, child)
@@ -586,7 +708,58 @@ def build_wrist_chain(robot, side, config, parent):
                   link.get("name"), {"xyz": [0, 0, 0], "rpy": [0, 0, 0]})
         parent = link.get("name")
 
-    return parent
+    # The rest of the palm: bolted pieces, welded exactly as upstream has them.
+    for link in palm_links[1:]:
+        robot.append(link)
+    for weld in palm_welds:
+        origin = weld["origin"]
+        add_joint(robot, f"arm_{side}_{weld['name']}", "fixed",
+                  v1_palm_link_name(side, weld["parent"]),
+                  v1_palm_link_name(side, weld["child"]),
+                  {"xyz": np.fromstring(origin.get("xyz", "0 0 0"), sep=" "),
+                   "rpy": np.fromstring(origin.get("rpy", "0 0 0"), sep=" ")}
+                  if origin is not None else {"xyz": [0, 0, 0], "rpy": [0, 0, 0]})
+
+    return parent, mounts
+
+
+def graft_v2_digits(robot, side, config, dexhand, mounts) -> None:
+    """Bolt the V2 digit assemblies onto the V1 palm where V1's own digits were.
+
+    The V2 hand's own palm link is dropped; only the digits are taken. Each one
+    keeps its V2 joint exactly as the variant left it -- axis, travel, and the
+    mimic tags that make the finger curl -- and is given the V1 mount's origin,
+    because the bracket it bolts to is V1's.
+
+    That the two descriptions agree about where the fingers sit is not assumed:
+    referred to a common frame, the four finger mounts differ by 2 to 3 mm
+    between V1 and V2. The thumb is the exception at 15 mm, which is real -- V2
+    moved it -- and is why the adapter below is per-digit rather than shared.
+    """
+    adapters = (config.get("hand") or {}).get("digit_adapter") or {}
+    for digit, (parent, origin) in mounts.items():
+        joint_name = side_name(f"R_{digit}_Yaw", side)
+        joint = dexhand.find(f"joint[@name='{joint_name}']")
+        if joint is None:
+            raise SystemExit(f"the V2 description has no joint {joint_name}")
+        root_link = joint.find("child").get("link")
+
+        adapter = adapters.get(digit) or {"xyz": [0, 0, 0], "rpy": [0, 0, 0]}
+        xyz = np.fromstring(origin.get("xyz", "0 0 0"), sep=" ")
+        rpy = np.fromstring(origin.get("rpy", "0 0 0"), sep=" ")
+        if side == "left":
+            adapter = {"xyz": mirror_vector(adapter["xyz"]),
+                       "rpy": mirror_rpy(adapter["rpy"])}
+        joint.find("parent").set("link", parent)
+        placed = joint.find("origin")
+        if placed is None:
+            placed = ET.SubElement(joint, "origin")
+        placed.set("xyz", as_text(xyz + np.asarray(adapter["xyz"], dtype=float)))
+        placed.set("rpy", as_text(rpy + np.asarray(adapter["rpy"], dtype=float)))
+
+        links, joints = subtree(dexhand, root_link)
+        for element in links + [joint] + joints:
+            robot.append(element)
 
 
 def attach_arm(robot, side, config, dexhand, tunable=False):
@@ -603,7 +776,14 @@ def attach_arm(robot, side, config, dexhand, tunable=False):
         add_joint(robot, f"arm_{side}_forearm_mount", "fixed", parent, child, mount)
         parent = child
 
-    parent = build_wrist_chain(robot, side, config, parent)
+    parent, mounts = build_wrist_chain(robot, side, config, parent)
+
+    if mounts is not None:
+        # V1 palm: the palm is already part of the chain, and only the V2
+        # digits are grafted onto it. There is no hand interface to place,
+        # because there is no separate hand to interface with.
+        graft_v2_digits(robot, side, config, dexhand, mounts)
+        return
 
     interface = config["hand_interface"]
     if side == "left":
@@ -682,6 +862,7 @@ def main() -> None:
     # Right arm only, hand welded straight on: the DexHand V2 arrangement.
     v2_config = copy.deepcopy(config)
     v2_config["wrist"]["enabled"] = False
+    v2_config.setdefault("hand", {})["palm"] = "v2"
     v2_config["hand_interface"] = {"xyz": [0, 0, 0], "rpy": [0, 0, 0]}
     robot = load_humanoid(config)
     attach_arm(robot, "right", v2_config, load_dexhand("right", config))

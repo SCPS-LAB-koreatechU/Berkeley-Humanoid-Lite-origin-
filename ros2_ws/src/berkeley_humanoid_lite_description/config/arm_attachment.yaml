@@ -112,6 +112,27 @@ hand_interface:
 # Ratios near 1 here are placeholders, not agreement with that.
 # ---------------------------------------------------------------------------
 hand:
+  # Which palm the digits are bolted to.
+  #
+  #   v1  the DexHand V1 palm: four bulk pieces bolted in a row plus a cover
+  #       plate, with a digit on each. This build's palm. The third wrist joint
+  #       drives it directly, as upstream intends.
+  #   v2  the DexHand V2 palm: one printed part carrying all five digits, welded
+  #       to the wrist through an interface part that does not exist yet.
+  #
+  # Only the digits are V2 here -- "DexHand V1 with the fingers swapped for V2"
+  # is a V1 forearm, wrist and palm carrying V2 digit assemblies.
+  palm: v1
+
+  # The bracket between a V1 bulk and a V2 digit. NOT MEASURED, and identity is
+  # a claim: that a V2 digit bolts exactly where V1's did. For the four fingers
+  # that is nearly true -- referred to a common frame the mounts agree to within
+  # 2 to 3 mm -- but V2 moved the thumb, and referred the same way it is 15 mm
+  # from where V1 put it. Whichever adapter was printed to carry it belongs
+  # here; until then the thumb is 15 mm out of place.
+  digit_adapter:
+    Thumb: {xyz: [0.0, 0.0, 0.0], rpy: [0.0, 0.0, 0.0]}
+
   fingers: [Index, Middle, Ring, Pinky]
 
   # Servo travel, tighter than the upstream description's (which is the
