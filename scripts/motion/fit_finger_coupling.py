@@ -38,6 +38,28 @@ THE PROCEDURE
     of projection error (pinky, the worst; 0.1 deg index and ring; the middle
     finger's axes are exactly along y, so use it if you measure only one).
 
+    **This is the error that matters most, and the only one you cannot fix
+    afterwards.** Looking along the finger instead of across it foreshortens it,
+    and a foreshortened finger still produces a perfectly self-consistent set of
+    angles -- the fit cannot tell. Pure geometry, no noise, on the proximal
+    ratio:
+
+        camera off by   5 deg    ratio biased by  -0.003
+                       10 deg                     -0.014
+                       15 deg                     -0.031
+                       20 deg                     -0.054
+                       30 deg                     -0.119
+                       60 deg                     -0.428
+
+    against a +/-0.013 error bar from clicking. So aim within about 10 degrees.
+    The tool cross-checks clicked phalanx lengths against the model's and warns,
+    but only from roughly 30 degrees up -- below that the signal is smaller than
+    the clicking noise, so the warning staying quiet is not a clean bill.
+
+    Filming across a desk at whatever angle the hand happens to sit is the
+    failure mode: put the camera on the table, level with the hand, looking
+    perpendicular to the finger, and keep it still between poses.
+
 2.  Command the knuckle to a handful of angles across its travel -- 0 to 0.95
     rad. Nine poses gives DIP +/-0.030 at 2 deg reading error; three gives
     +/-0.047; seventeen only gets to +/-0.022, so there is little point going
@@ -45,6 +67,11 @@ THE PROCEDURE
 
 3.  Read three angles off each image: the knuckle, then each segment relative to
     the one before it. Angles between *segments*, not to any fixed axis.
+
+    A video is fine, and easier than shooting nine stills -- pull frames out of
+    it afterwards:
+
+        ffmpeg -i sweep.mp4 -vf fps=1 frame_%03d.png
 
 4.  Start a measurement file, one row per photo:
 
@@ -181,6 +208,61 @@ def angles_from_points(points: np.ndarray) -> np.ndarray:
     # out as is the one that means "curled".
     reference = signed[np.argmax(np.abs(signed).sum(axis=1))]
     return signed * np.sign(reference.sum() or 1.0)
+
+
+#: Median phalanx-proportion error above which the view is called foreshortened.
+#:
+#: Calibrated against simulated tilts. The 95th-percentile floor on a square
+#: view is 0.3% when clicking to 2 px on a well-filled frame and 0.8% when
+#: clicking to 5 px or imaging the hand small; the signal is 0.5-0.8% at 20
+#: degrees, 0.9% at 25 and 1.1-1.3% at 30. So 1% fires from about 30 degrees
+#: whatever the conditions, and below 20 the check simply cannot separate tilt
+#: from clicking noise.
+#:
+#: That is a backstop against a badly aimed camera, not a substitute for aiming
+#: it: at 30 degrees the proximal ratio is already biased by -0.11 against a
+#: +/-0.013 error bar. Aim within 10 degrees, where the bias is under the noise.
+FORESHORTENING_TOLERANCE = 0.01
+
+
+def phalanx_ratios(hand: HandModel, finger: str) -> np.ndarray:
+    """Proximal, middle and distal segment lengths, normalised by the proximal.
+
+    Read from the URDF rather than stated, so they follow the model. These are
+    the same for all four fingers as it ships, but nothing guarantees that.
+    """
+    lengths = np.array([
+        np.linalg.norm(hand.chain.joints[f"R_{finger}_{joint}"].origin[:3, 3])
+        for joint in ("Flexor", "DIP", "tip_fixed")
+    ])
+    return lengths / lengths[0]
+
+
+def check_foreshortening(hand: HandModel, points: dict[str, np.ndarray]) -> float:
+    """Typical disagreement between clicked and modelled phalanx proportions.
+
+    A finger flexes in one plane, so a camera square to that plane images every
+    segment at its true length whatever the pose, and the clicked proportions
+    match the model's. Point the camera along the finger instead and the
+    segments foreshorten by different amounts -- exactly the error the ratios
+    are most sensitive to, and one the fit itself cannot see, because a
+    foreshortened finger still gives a perfectly consistent set of angles.
+
+    The median across poses and segments, not the maximum: clicking to a couple
+    of pixels puts a 3-4% floor under the worst single reading, which buries the
+    signal from anything short of a 45 degree tilt. The median sits near zero on
+    a square view and tracks the tilt cleanly.
+    """
+    deviations = []
+    for finger, rows in points.items():
+        expected = phalanx_ratios(hand, finger)
+        p = rows.reshape(len(rows), len(POINT_NAMES), 2)
+        lengths = np.linalg.norm(np.diff(p, axis=1), axis=2)[:, 1:]     # skip base->mcp
+        for row in lengths:
+            if row[0] < 1e-6:
+                continue
+            deviations.extend(np.abs(row / row[0] - expected))
+    return float(np.median(deviations)) if deviations else 0.0
 
 
 def write_template(path: Path, mode: str, poses: int = 9) -> None:
@@ -365,6 +447,17 @@ def report(fits: dict[str, dict], mode: str, diagnostics: dict | None = None) ->
     dip = [fits[f]["dip"][0] for f in fits]
     print()
 
+    if diagnostics and diagnostics.get("foreshortening", 0.0) > FORESHORTENING_TOLERANCE:
+        print("!!  The camera is not square to the finger. Clicked phalanx lengths")
+        print(f"    disagree with the model's by {diagnostics['foreshortening'] * 100:.0f}%, "
+              f"against the {FORESHORTENING_TOLERANCE * 100:.0f}% a square view allows.")
+        print("    This biases the ratios low and the fit cannot detect it -- a")
+        print("    foreshortened finger still gives perfectly consistent angles.")
+        print("    Reshoot with the camera across the finger, not along it, and")
+        print("    within about 10 degrees of its flexion plane. The numbers below")
+        print("    are not usable until then.")
+        print()
+
     if diagnostics:
         curved = diagnostics["curvature_p"] < CURVATURE_ALPHA
         print(f"Linearity: p = {diagnostics['curvature_p']:.2g} against a cubic, "
@@ -435,9 +528,11 @@ def main() -> int:
 
     if args.from_points:
         points = read_csv(args.measurements, POINT_COLUMNS)
-        data = {f: np.column_stack([angles_from_points(v)]) for f, v in points.items()}
-        return report(fit_from_angles(data, np.pi / 180.0), "angles",
-                      pooled_diagnostics(data, np.pi / 180.0))
+        skew = check_foreshortening(HandModel.from_urdf(args.urdf), points)
+        data = {f: angles_from_points(v) for f, v in points.items()}
+        diagnostics = pooled_diagnostics(data, np.pi / 180.0)
+        diagnostics["foreshortening"] = skew
+        return report(fit_from_angles(data, np.pi / 180.0), "angles", diagnostics)
 
     if args.positions:
         hand = HandModel.from_urdf(args.urdf)

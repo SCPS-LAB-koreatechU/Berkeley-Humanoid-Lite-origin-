@@ -93,7 +93,30 @@ axes are exactly parallel, so one view reads all three angles undistorted;
 viewing along the palm's y rather than the finger's own axis costs at most 0.4°
 of projection error (pinky, the worst — 0.1° for index and ring, and the middle
 finger's axes lie exactly along y). Nine poses across the travel is the point of
-diminishing returns. Then:
+diminishing returns. A video is easier than nine stills; pull frames afterwards
+with `ffmpeg -i sweep.mp4 -vf fps=1 frame_%03d.png`.
+
+**Aiming the camera is the error that matters, and the only one you cannot fix
+afterwards.** Looking along the finger rather than across it foreshortens it,
+and a foreshortened finger still gives a perfectly self-consistent set of
+angles, so the fit cannot tell. Pure geometry, no noise, on the proximal ratio:
+
+| camera off by | ratio biased by |
+| ---: | ---: |
+| 5° | −0.003 |
+| 10° | −0.014 |
+| 20° | −0.054 |
+| 30° | −0.119 |
+| 60° | −0.428 |
+
+against a ±0.013 error bar from clicking — so aim within about 10°. The tool
+cross-checks clicked phalanx lengths against the model's and warns, but only
+from roughly 30° up: below that the signal is smaller than the clicking noise,
+so a quiet warning is not a clean bill. Filming across a desk at whatever angle
+the hand happens to sit is the failure mode. Put the camera on the table, level
+with the hand, perpendicular to the finger, and keep it still between poses.
+
+Then:
 
 ```bash
 python3 scripts/motion/fit_finger_coupling.py points.csv --from-points --template
