@@ -1,4 +1,4 @@
-# Berkeley Humanoid Lite
+# Berkeley Humanoid Lite with Dexhand
 
 > **Licensing note.** This repository is not uniformly MIT. The DexHand
 > descriptions vendored under `ros2_ws/vendor/`, and the mirrored meshes derived
