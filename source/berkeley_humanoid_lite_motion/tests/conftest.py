@@ -1,11 +1,12 @@
-from pathlib import Path
-
 import pytest
 
-REPO = Path(__file__).resolve().parents[3]
-GENERATED_URDF = REPO / "ros2_ws/src/berkeley_humanoid_lite_description/urdf/berkeley_humanoid_lite_dexhand.urdf"
-UPSTREAM_URDF = REPO / "ros2_ws/vendor/dexhandv2_description/urdf/dexhandv2_right.urdf"
-ATTACHMENT_CONFIG = REPO / "ros2_ws/src/berkeley_humanoid_lite_description/config/arm_attachment.yaml"
+from berkeley_humanoid_lite_motion.models import (  # noqa: F401  (re-exported)
+    ATTACHMENT_CONFIG, REPO_ROOT, UPSTREAM_DEXHAND, urdf,
+)
+
+REPO = REPO_ROOT
+GENERATED_URDF = urdf()
+UPSTREAM_URDF = UPSTREAM_DEXHAND
 
 
 @pytest.fixture(scope="session")

@@ -58,6 +58,19 @@ Variable 'R_Index_Yaw' is not known to model 'berkeley-humanoid-lite'
 That is a domain collision, not a configuration error. The script refuses to run
 on domain 0 for this reason.
 
+**`v1arm` is the robot.** The build is a DexHand V1 forearm and 3-DOF wrist
+carrying a DexHand V2 hand — "V1 with the fingers swapped for V2", as a
+kinematic chain — and `v1arm` is the only generated model that is that. It is
+the default everywhere now: the MoveIt demo, the RViz sanity check, and the
+measurement scripts under `scripts/motion/`. They had drifted, with MoveIt
+planning against `v1arm` while the scripts analysed the wristless `dexhand` and
+the RViz launch did not offer `v1arm` at all. `models.py` in the motion package
+is the single place that names it.
+
+The other three are narrower views of the same robot, useful for particular
+jobs and not for planning: `dexhand` has no wrist, so a plan made against it
+cannot be executed; `stock` has no hand; `tuning` exists only to fit the mount.
+
 Three robots are available; pass `model:=` through to the launch file:
 
 | `model` | Robot | DOF/arm | IK | Planning groups |

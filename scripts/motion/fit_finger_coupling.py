@@ -143,7 +143,9 @@ from berkeley_humanoid_lite_motion.dexhand import (  # noqa: E402
     FINGERS, PALM_FRAME, HandModel, tip_frame,
 )
 
-GENERATED = REPO / "ros2_ws/src/berkeley_humanoid_lite_description/urdf/berkeley_humanoid_lite_dexhand.urdf"
+from berkeley_humanoid_lite_motion.models import urdf as model_urdf  # noqa: E402
+
+GENERATED = model_urdf()
 
 #: Significance level for the linear-vs-quadratic test. A quadratic always fits
 #: noisy data a little better, so the question is whether it fits enough better

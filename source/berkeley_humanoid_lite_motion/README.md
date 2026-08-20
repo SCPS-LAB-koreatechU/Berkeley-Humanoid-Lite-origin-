@@ -11,6 +11,15 @@ pip install -e source/berkeley_humanoid_lite_motion
 pytest source/berkeley_humanoid_lite_motion
 ```
 
+## Which model
+
+`berkeley_humanoid_lite_v1arm.urdf` — a DexHand V1 forearm and 3-DOF wrist
+carrying a DexHand V2 hand, both arms, upper body. That is the build, and
+`models.py` is the one place that says so; scripts and tests import it rather
+than naming a path each. The wristless `dexhand` model shares the same hand
+geometry to the last floating-point digit, so measurements carry over, but it
+cannot be planned against.
+
 ## Start here
 
 ```bash

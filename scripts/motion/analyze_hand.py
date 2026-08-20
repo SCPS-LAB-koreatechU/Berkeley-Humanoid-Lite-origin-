@@ -27,8 +27,10 @@ from berkeley_humanoid_lite_motion.dexhand import (  # noqa: E402
 )
 from berkeley_humanoid_lite_motion.urdf import Chain  # noqa: E402
 
-GENERATED = REPO / "ros2_ws/src/berkeley_humanoid_lite_description/urdf/berkeley_humanoid_lite_dexhand.urdf"
-UPSTREAM = REPO / "ros2_ws/vendor/dexhandv2_description/urdf/dexhandv2_right.urdf"
+from berkeley_humanoid_lite_motion.models import urdf as model_urdf  # noqa: E402
+
+GENERATED = model_urdf()
+from berkeley_humanoid_lite_motion.models import UPSTREAM_DEXHAND as UPSTREAM  # noqa: E402
 
 
 def palm_plane(hand: HandModel) -> tuple[np.ndarray, np.ndarray]:

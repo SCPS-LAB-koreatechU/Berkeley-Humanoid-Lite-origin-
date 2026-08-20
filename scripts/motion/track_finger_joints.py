@@ -94,11 +94,23 @@ import numpy as np
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "source/berkeley_humanoid_lite_motion"))
 
-from berkeley_humanoid_lite_motion.dexhand import FINGERS  # noqa: E402
+from berkeley_humanoid_lite_motion.dexhand import FINGERS, HandModel  # noqa: E402
+from berkeley_humanoid_lite_motion.models import urdf as model_urdf  # noqa: E402
 
-#: Middle phalanx over proximal, from the URDF's 30.29 / 45.26 mm. Used to tell
-#: the finger's bearings apart from every other circle in the room.
+#: Middle phalanx over proximal, used to tell the finger's bearings apart from
+#: every other circle in the room. Read from the model rather than written down,
+#: so a description change cannot leave the detector keyed to the old geometry.
+#: This value is the fallback for when no URDF is to hand.
 PHALANX_RATIO = 30.29 / 45.26
+
+
+def phalanx_ratio_of(path, finger: str = "Index") -> float:
+    """Middle over proximal phalanx length, from a generated URDF."""
+    chain = HandModel.from_urdf(path).chain
+    lengths = [np.linalg.norm(chain.joints[f"R_{finger}_{j}"].origin[:3, 3])
+               for j in ("Flexor", "DIP")]
+    return lengths[1] / lengths[0]
+
 
 #: Hough settings to try, coarse to fine. How large a bearing appears depends
 #: entirely on framing -- 13 px across a whole hand, 40 px for one finger filling
@@ -294,6 +306,8 @@ def main() -> int:
     parser.add_argument("--finger", default="Middle", choices=list(FINGERS))
     parser.add_argument("--step", type=int, default=6,
                         help="use every Nth frame (default: 6)")
+    parser.add_argument("--urdf", type=Path, default=model_urdf(),
+                        help="model the finger's proportions are taken from")
     parser.add_argument("-o", "--output", type=Path, default=Path("angles.csv"))
     parser.add_argument("--preview", type=Path,
                         help="directory to write annotated frames into")
@@ -318,12 +332,14 @@ def main() -> int:
     if args.preview:
         args.preview.mkdir(parents=True, exist_ok=True)
 
+    ratio = phalanx_ratio_of(args.urdf, args.finger) if args.urdf.is_file() else PHALANX_RATIO
+
     rows, seen, missed, band, previous = [], 0, 0, None, None
     detections = []
     for index, frame in frames_from(args.source, args.step):
         seen += 1
         joints, band = find_joints(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), roi,
-                                   band, previous=previous)
+                                   band, ratio, previous=previous)
         if joints is None:
             missed += 1
             continue

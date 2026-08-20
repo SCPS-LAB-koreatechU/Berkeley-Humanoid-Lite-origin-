@@ -5,7 +5,7 @@ This is the URDF sanity check, and with model:=tuning it is also how the
 DexHand mount transform gets dialled in.
 
     ros2 launch berkeley_humanoid_lite_description display.launch.py
-    ros2 launch berkeley_humanoid_lite_description display.launch.py model:=dexhand
+    ros2 launch berkeley_humanoid_lite_description display.launch.py
     ros2 launch berkeley_humanoid_lite_description display.launch.py model:=tuning
 
 Models:
@@ -24,7 +24,11 @@ from launch_ros.actions import Node
 
 PACKAGE = "berkeley_humanoid_lite_description"
 
+# v1arm is the build -- V1 forearm and wrist carrying a DexHand V2 -- and so the
+# default. It was missing here entirely, which meant the URDF sanity check could
+# not be run against the robot that exists.
 MODELS = {
+    "v1arm": "berkeley_humanoid_lite_v1arm.urdf",
     "stock": "berkeley_humanoid_lite.urdf",
     "dexhand": "berkeley_humanoid_lite_dexhand.urdf",
     "tuning": "berkeley_humanoid_lite_tuning.urdf",
@@ -70,7 +74,7 @@ def generate_launch_description() -> LaunchDescription:
     return LaunchDescription([
         DeclareLaunchArgument(
             "model",
-            default_value="dexhand",
+            default_value="v1arm",
             description=f"which URDF to show: {', '.join(sorted(MODELS))}",
         ),
         OpaqueFunction(function=launch_setup),
