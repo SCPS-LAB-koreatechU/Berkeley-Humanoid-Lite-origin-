@@ -63,15 +63,44 @@ couplings for a comparable anthropomorphic finger — `DIP ← PIP` at **0.656**
 thumb `IP ← MCP` at **0.732**, linear fits through the origin of a quartic — so
 ratios of 1.0 should be read as placeholders, not as agreement.
 
-Measure them:
+### Measuring them
+
+**Photograph the finger from the side and read the angles off the image.** Do
+not use the capture rig: the ratios *are* angle ratios, and reading them from a
+fingertip position dilutes the distal stage through an 18 mm lever. 1-sigma on
+each parameter, from a 9-pose sweep:
+
+| what you measure | `Flexor ← Pitch` | `DIP ← Flexor` |
+| --- | ---: | ---: |
+| fingertip markers, 2.0 mm | ±0.061 | ±0.273 |
+| fingertip markers, 0.5 mm | ±0.015 | ±0.068 |
+| **angles read to ±2°** | **±0.021** | **±0.030** |
+| angles read to ±1° | ±0.010 | ±0.015 |
+
+A photograph read to a couple of degrees beats half-millimetre triangulation on
+the parameter that is hard to see, with no markers and no calibration.
+
+Before anything else, check the coupling exists: hold the hand still, command
+one knuckle across its travel, and watch whether the middle and distal segments
+rotate relative to the segment before them. If they do not, this build's fingers
+are rigid — set both multipliers to 0 and stop.
+
+Then point a camera along the palm's **y axis**. Each finger's three flexion
+axes are exactly parallel, so one view reads all three angles undistorted;
+viewing along the palm's y rather than the finger's own axis costs at most 0.4°
+of projection error (pinky, the worst — 0.1° for index and ring, and the middle
+finger's axes lie exactly along y). Nine poses across the travel is the point of
+diminishing returns. Then:
 
 ```bash
-python3 scripts/motion/fit_finger_coupling.py measurements.csv
+python3 scripts/motion/fit_finger_coupling.py angles.csv
 ```
 
-It fits both stages against the model's own forward kinematics and prints the
-YAML to paste back. On synthetic data with 0.3 mm of noise it recovers a 0.83
-ratio as 0.824.
+It fits both stages, prints an error bar per finger and the YAML to paste back,
+and tests whether a single multiplier is even the right model — ALLEX needed a
+quartic for the same relation. That test needs ±1° to work; ±2° pins the ratios
+but cannot tell curvature from noise. `--positions` takes fingertip coordinates
+instead, if you would rather use the rig anyway.
 
 **If the fingers on your build really are rigid**, set both multipliers to 0 and
 regenerate — the model goes back to what it was, and the pinch conclusion goes
