@@ -183,7 +183,9 @@ of the sweep. It measures `Flexor <- Pitch`, which is the ratio worth measuring
 -- `DIP <- Flexor` already comes from the vendor's CAD. Clamp the finger and fix
 the camera: in a handheld clip the proximal-to-middle phalanx length ratio, a
 constant of the hardware, ranged over 0.63 to 0.88, which is the foreshortening
-measuring itself.
+measuring itself. Aim by looking for the bearings -- their axes are the flexion
+axes, so a view that shows them as circles is a view in which the finger flexes
+in the image plane, and one that shows the finger's back is neither.
 
 **A ratio only describes free space.** The fingers are tendon-driven, so under
 contact the proximal joint stops at the object and the distal ones keep closing.

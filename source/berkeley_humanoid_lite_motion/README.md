@@ -133,6 +133,13 @@ python3 scripts/motion/track_finger_joints.py sweep.mp4 \
 python3 scripts/motion/fit_finger_coupling.py angles.csv
 ```
 
+**Aim by looking for the bearings.** They sit on the finger's sides and their
+axes *are* the flexion axes, so the view that shows them as circles is exactly
+the view in which the finger flexes in the image plane. If the shot shows the
+back of the finger and no rings, turn 90°. A top-down shot of a module lying on
+a desk fails both ways at once: the bearings are edge-on and invisible, and the
+finger folds towards the camera instead of across it.
+
 That measures `Flexor ← Pitch` — the ratio actually worth measuring, since
 `DIP ← Flexor` already comes from the vendor's CAD at 1.0. The fingertip has no
 bearing, so the distal angle is left unmeasured rather than guessed. Look at the

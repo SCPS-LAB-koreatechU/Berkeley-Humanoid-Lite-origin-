@@ -20,6 +20,24 @@ worth measuring: `DIP <- Flexor` already comes from the vendor's own CAD at 1.0,
 where nothing states the proximal one. The distal angle would need the
 fingertip, which has no bearing and would have to be clicked per frame.
 
+AIMING THE CAMERA: LOOK ALONG THE BEARING AXES
+----------------------------------------------
+The bearings sit on the finger's *sides*, and their axes are the flexion axes.
+So the view that shows them as circles is exactly the view in which the finger
+flexes in the image plane -- the one the measurement needs. That makes aiming
+checkable by eye, with no protractor:
+
+    you can see the bearing faces as circles  ->  the camera is right
+    you see the back of the finger, no rings  ->  turn 90 degrees
+
+A top-down shot of a finger lying on a desk fails this: the bearings are edge-on
+and invisible, and the finger folds towards the camera rather than across it,
+which is the worst case for foreshortening. Either put the camera at desk level
+looking horizontally at the finger's side, or lay the module on its side and
+keep the camera above.
+
+If no frame yields three bearings, that is almost always what happened.
+
 THE RIG
 -------
 The measurement is only as good as how still everything is:
@@ -199,8 +217,17 @@ def main() -> int:
     except ImportError:
         raise SystemExit("this needs opencv: pip install opencv-python-headless")
 
-    base = np.array([float(v) for v in args.base.split(",")])
-    roi = [int(v) for v in args.roi.split(",")] if args.roi else None
+    def numbers(text, count, flag):
+        try:
+            values = [float(v) for v in text.split(",")]
+        except ValueError:
+            values = []
+        if len(values) != count:
+            raise SystemExit(f"{flag} wants {count} comma-separated numbers, got {text!r}")
+        return values
+
+    base = np.array(numbers(args.base, 2, "--base"))
+    roi = [int(v) for v in numbers(args.roi, 4, "--roi")] if args.roi else None
     if args.preview:
         args.preview.mkdir(parents=True, exist_ok=True)
 
@@ -223,8 +250,17 @@ def main() -> int:
             cv2.imwrite(str(args.preview / f"{index:05d}.jpg"), marked)
 
     if not rows:
-        raise SystemExit(f"no frame in {args.source} gave three bearings; "
-                         "check --roi, and look at --preview output")
+        raise SystemExit(
+            f"no frame in {args.source} gave three bearings.\n"
+            "\n"
+            "Most likely the camera is not looking along the bearing axes. The\n"
+            "bearings are on the finger's sides; if the shot shows the back of\n"
+            "the finger they are edge-on and invisible -- and that same view is\n"
+            "the one where the finger folds towards the camera instead of across\n"
+            "it, so it could not be measured even if they were found. Turn 90\n"
+            "degrees: you should see the bearing faces as circles.\n"
+            "\n"
+            "Failing that, check --roi, and re-run with --preview to look.")
 
     # Flexion is one direction; whichever sign the most-bent frame came out as is
     # the one that means curled.

@@ -115,3 +115,26 @@ def test_a_swept_sequence_recovers_the_ratio(tracker, blur):
     assert len(pitches) >= 6
     p, f = np.radians(pitches), np.radians(flexors)
     assert float(p @ f / (p @ p)) == pytest.approx(TRUE_FLEXOR, abs=0.03)
+
+
+def test_argument_parsing_rejects_a_malformed_point(tracker, tmp_path, monkeypatch):
+    """A typo in --roi used to surface as a raw ValueError traceback."""
+    import sys
+
+    monkeypatch.setattr(sys, "argv", ["track", str(tmp_path), "--base", "1,2",
+                                      "--roi", "640,150:0"])
+    with pytest.raises(SystemExit) as excinfo:
+        tracker.main()
+    assert "--roi wants 4" in str(excinfo.value)
+
+
+def test_a_view_of_the_finger_from_behind_finds_nothing(tracker):
+    """The bearings are on the finger's sides, so a shot of its back has none to
+    find -- and that is the same view in which flexion folds towards the camera.
+    Detection failing is the aiming check, not a separate problem."""
+    image = np.full((600, 900, 3), 245, np.uint8)
+    # The finger seen edge-on: white body, joint gaps, but no bearing faces.
+    cv2.line(image, (300, 400), (700, 380), (255, 255, 255), 40)
+    for x in (430, 560):
+        cv2.line(image, (x, 380), (x, 420), (60, 60, 60), 3)
+    assert tracker.find_joints(cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)) is None
