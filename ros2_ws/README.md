@@ -170,13 +170,20 @@ shape for a linkage-driven finger and the wrong precision, and every number
 above moves with them.
 
 Measuring them is a photograph, not a capture session. The ratios are angle
-ratios, so read the angles: a side view read to +/-2 degrees pins the distal
-stage to +/-0.03, where half-millimetre fingertip triangulation only manages
-+/-0.07. Each finger's three flexion axes are exactly parallel, so one view
-along the palm's y axis reads all three at once, within 0.4 degrees of
-projection error at worst. `scripts/motion/fit_finger_coupling.py` documents the
-procedure and does the fit; run its step 0 first, since if the segments do not
-move at all the fingers are rigid on this build and the multipliers should be 0.
+ratios, so read the angles: clicking the joint centres in a side view to a
+couple of pixels pins the distal stage to +/-0.02, where half-millimetre
+fingertip triangulation only manages +/-0.07. Each finger's three flexion axes
+are exactly parallel, so one view along the palm's y axis reads all three at
+once, within 0.4 degrees of projection error at worst, and no servo angle is
+needed -- the knuckle angle comes from the same photo.
+`scripts/motion/fit_finger_coupling.py --from-points --template` starts the
+file; the same script documents the procedure and does the fit.
+
+**A ratio only describes free space.** The fingers are tendon-driven, so under
+contact the proximal joint stops at the object and the distal ones keep closing.
+`<mimic>` holds the ratio rigidly and cannot conform, which makes these models
+right for reach and retargeting and wrong for grasp physics. Model the tendon in
+whichever simulator handles the contact.
 
 While fixing this, one upstream defect surfaced: every `<mimic>` in
 `dexhandv2_right.urdf` names its driver without the `R_` prefix the joints

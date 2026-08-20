@@ -10,16 +10,19 @@ WHAT TO MEASURE, AND WITH WHAT
 ------------------------------
 Measure the **joint angles**, not the fingertip position, and a side-view
 photograph beats the motion capture rig. The ratios *are* angle ratios; reading
-them off a fingertip position dilutes the distal stage through a 18 mm lever and
-loses most of the precision. Per-parameter 1-sigma from a 9-pose sweep:
+them off a fingertip position dilutes the distal stage through an 18 mm lever
+and loses most of the precision. Per-parameter 1-sigma from a 9-pose sweep:
 
-    fingertip markers, 0.5 mm      Flexor +/-0.015    DIP +/-0.068
-    fingertip markers, 2.0 mm      Flexor +/-0.061    DIP +/-0.273
-    angles read to +/-2 deg        Flexor +/-0.021    DIP +/-0.030
-    angles read to +/-1 deg        Flexor +/-0.010    DIP +/-0.015
+    fingertip markers, 2.0 mm        Flexor +/-0.061    DIP +/-0.273
+    fingertip markers, 0.5 mm        Flexor +/-0.015    DIP +/-0.068
+    angles read to +/-2 deg          Flexor +/-0.021    DIP +/-0.030
+    joint centres clicked, +/-5 px   Flexor +/-0.032    DIP +/-0.049
+    joint centres clicked, +/-2 px   Flexor +/-0.013    DIP +/-0.022
 
-A photograph read to a couple of degrees beats half-millimetre triangulation on
-the parameter that is hard to see, and needs no markers and no calibration.
+Clicking joint centres in an image beats holding a protractor to it, so that is
+the mode to use (`--from-points`). Nothing needs to be calibrated and the
+commanded servo angle is not needed either -- every angle, including the
+knuckle's, is measured from the same photo.
 
 THE PROCEDURE
 -------------
@@ -43,20 +46,36 @@ THE PROCEDURE
 3.  Read three angles off each image: the knuckle, then each segment relative to
     the one before it. Angles between *segments*, not to any fixed axis.
 
-4.  Write them down and run this:
+4.  Start a measurement file, one row per photo:
 
-        finger,pitch,flexor,dip
-        Middle,0,0,0
-        Middle,13.6,11.2,7.5
-        ...
+        python3 scripts/motion/fit_finger_coupling.py points.csv --from-points --template
 
-        python3 scripts/motion/fit_finger_coupling.py angles.csv
+    Open each image and click five points along one finger: somewhere on the
+    palm behind the knuckle, then the knuckle, both interphalangeal joints, and
+    the fingertip. Paste the pixel coordinates into the row. Then:
 
-    Degrees by default; pass `--radians` if that is what you recorded.
+        python3 scripts/motion/fit_finger_coupling.py points.csv --from-points
 
-If you would rather use the capture rig, `--positions` takes fingertip
-coordinates in the palm frame instead (`finger,pitch,x,y,z`, metres) and fits
-through the model's forward kinematics. Expect the wider error bars above.
+Two other input modes exist. `--radians`/degrees angle triples
+(`finger,pitch,flexor,dip`) if you measured with a protractor or read the
+angles some other way, and `--positions` for fingertip coordinates in the palm
+frame (`finger,pitch,x,y,z`, metres) fitted through the model's forward
+kinematics -- with the wider error bars above.
+
+WHAT A RATIO CANNOT CAPTURE
+---------------------------
+If the finger is tendon-driven -- a cable along its length rather than a rigid
+four-bar -- then the ratio only holds in free space. Under contact the proximal
+joint stops at the object and the distal ones keep closing: the finger conforms,
+which is the whole point of an underactuated hand.
+
+A URDF `<mimic>` cannot do that. It enforces the ratio rigidly, so the model is
+right for retargeting and free-space reach and wrong for grasp physics -- a
+simulated finger will push an object away where the real one would wrap it.
+Measure the free-space ratio here, use it for the kinematics, and model the
+tendon properly in whatever simulator does the contact (MuJoCo tendons and
+equality constraints, PhysX fixed tendons). This is the same wall ALLEX
+describes: exact model in MJCF, linear approximation in URDF and USD.
 
 A NOTE ON LINEARITY
 -------------------
@@ -125,6 +144,66 @@ def read_csv(path: Path, columns: list[str]) -> dict[str, np.ndarray]:
     if not rows:
         raise SystemExit(f"{path} has no rows")
     return {finger: np.array(v) for finger, v in rows.items()}
+
+
+#: Joint centres to click, proximal to distal. `base` is any point on the palm
+#: along the finger's own axis, proximal of the knuckle -- it only sets the
+#: reference the knuckle angle is measured from.
+POINT_NAMES = ("base", "mcp", "pip", "dip", "tip")
+POINT_COLUMNS = [f"{name}_{axis}" for name in POINT_NAMES for axis in "uv"]
+
+
+def angles_from_points(points: np.ndarray) -> np.ndarray:
+    """(N, 10) clicked pixel coordinates to (N, 3) joint angles in degrees.
+
+    Each angle is between one segment and the one before it, so the result does
+    not depend on how the camera was rolled, only that the finger's flexion
+    plane is roughly facing it. Image v axis points down; that flips the sign of
+    a cross product but not of an angle between segments, so it is left alone.
+
+    Pixel coordinates rather than a protractor because they are easier to read
+    accurately: a couple of pixels' error over a 45 mm segment imaged 400 px
+    long is under half a degree, which is where the linearity test starts to
+    work.
+    """
+    p = points.reshape(len(points), len(POINT_NAMES), 2)
+    segments = np.diff(p, axis=1)                       # base->mcp, mcp->pip, ...
+    lengths = np.linalg.norm(segments, axis=2)
+    if np.any(lengths < 1e-6):
+        raise SystemExit("two clicked points coincide; every joint needs its own point")
+    unit = segments / lengths[..., None]
+    # Signed angle in the image plane, so a finger that hyperextends reads
+    # negative instead of folding back onto the same positive value.
+    cross = unit[:, :-1, 0] * unit[:, 1:, 1] - unit[:, :-1, 1] * unit[:, 1:, 0]
+    dot = np.sum(unit[:, :-1] * unit[:, 1:], axis=2)
+    signed = np.degrees(np.arctan2(cross, dot))
+    # Flexion is one consistent direction; whichever sign the first pose came
+    # out as is the one that means "curled".
+    reference = signed[np.argmax(np.abs(signed).sum(axis=1))]
+    return signed * np.sign(reference.sum() or 1.0)
+
+
+def write_template(path: Path, mode: str, poses: int = 9) -> None:
+    """Write an empty measurement file with the right header and row skeleton."""
+    if path.exists():
+        raise SystemExit(f"{path} already exists; move it aside or pick another name")
+    columns = {"angles": ["pitch", "flexor", "dip"],
+               "points": POINT_COLUMNS,
+               "positions": ["pitch", "x", "y", "z"]}[mode]
+    lines = [",".join(["finger", *columns])]
+    for finger in FINGERS:
+        for _ in range(poses):
+            lines.append(",".join([finger, *[""] * len(columns)]))
+    path.write_text("\n".join(lines) + "\n")
+    print(f"wrote {path}: {len(FINGERS)} fingers x {poses} poses, columns "
+          f"{', '.join(columns)}")
+    if mode == "points":
+        print()
+        print("One row per photo. Open each image, click the five joint centres")
+        print("along one finger -- a point on the palm behind the knuckle, then the")
+        print("knuckle, both interphalangeal joints, and the fingertip -- and paste")
+        print("the pixel coordinates in. Any viewer that shows a cursor readout will")
+        print("do; the numbers only have to be consistent within one photo.")
 
 
 def fit_ratio(driver: np.ndarray, driven: np.ndarray) -> tuple[float, float, float]:
@@ -327,13 +406,38 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("measurements", type=Path)
+    parser.add_argument("--from-points", action="store_true",
+                        help="input is clicked joint-centre pixel coordinates; the "
+                             "angles are computed from them")
     parser.add_argument("--positions", action="store_true",
                         help="input is finger,pitch,x,y,z fingertip positions [m] "
                              "in the palm frame, rather than joint angles")
     parser.add_argument("--radians", action="store_true",
                         help="angles are in radians (default: degrees)")
+    parser.add_argument("--template", action="store_true",
+                        help="write an empty measurement file to fill in, and exit")
+    parser.add_argument("--poses", type=int, default=9,
+                        help="rows per finger in --template (default: 9)")
     parser.add_argument("--urdf", type=Path, default=GENERATED)
     args = parser.parse_args()
+
+    if args.template:
+        mode = "points" if args.from_points else "positions" if args.positions else "angles"
+        write_template(args.measurements, mode, args.poses)
+        return 0
+
+    if not args.measurements.is_file():
+        raise SystemExit(
+            f"{args.measurements} does not exist. Write it yourself, or start from "
+            f"a skeleton:\n"
+            f"  python3 {Path(__file__).name} {args.measurements} --from-points --template"
+        )
+
+    if args.from_points:
+        points = read_csv(args.measurements, POINT_COLUMNS)
+        data = {f: np.column_stack([angles_from_points(v)]) for f, v in points.items()}
+        return report(fit_from_angles(data, np.pi / 180.0), "angles",
+                      pooled_diagnostics(data, np.pi / 180.0))
 
     if args.positions:
         hand = HandModel.from_urdf(args.urdf)

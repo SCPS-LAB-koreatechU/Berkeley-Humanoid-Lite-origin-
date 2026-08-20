@@ -74,11 +74,14 @@ each parameter, from a 9-pose sweep:
 | --- | ---: | ---: |
 | fingertip markers, 2.0 mm | ±0.061 | ±0.273 |
 | fingertip markers, 0.5 mm | ±0.015 | ±0.068 |
-| **angles read to ±2°** | **±0.021** | **±0.030** |
-| angles read to ±1° | ±0.010 | ±0.015 |
+| angles read to ±2° | ±0.021 | ±0.030 |
+| joint centres clicked, ±5 px | ±0.032 | ±0.049 |
+| **joint centres clicked, ±2 px** | **±0.013** | **±0.022** |
 
-A photograph read to a couple of degrees beats half-millimetre triangulation on
-the parameter that is hard to see, with no markers and no calibration.
+Clicking joint centres in the image beats holding a protractor to it, and beats
+half-millimetre triangulation on the parameter that is hard to see. Nothing is
+calibrated, and the commanded servo angle is not needed either — every angle,
+the knuckle's included, comes from the same photo.
 
 Before anything else, check the coupling exists: hold the hand still, command
 one knuckle across its travel, and watch whether the middle and distal segments
@@ -93,14 +96,32 @@ finger's axes lie exactly along y). Nine poses across the travel is the point of
 diminishing returns. Then:
 
 ```bash
-python3 scripts/motion/fit_finger_coupling.py angles.csv
+python3 scripts/motion/fit_finger_coupling.py points.csv --from-points --template
+# fill in five clicked points per photo, then
+python3 scripts/motion/fit_finger_coupling.py points.csv --from-points
 ```
 
 It fits both stages, prints an error bar per finger and the YAML to paste back,
 and tests whether a single multiplier is even the right model — ALLEX needed a
-quartic for the same relation. That test needs ±1° to work; ±2° pins the ratios
-but cannot tell curvature from noise. `--positions` takes fingertip coordinates
-instead, if you would rather use the rig anyway.
+quartic for the same relation. That test needs about ±1° of angle accuracy to
+work; coarser measurements pin the ratios but cannot tell curvature from noise.
+Angle triples and fingertip positions are also accepted.
+
+### What a ratio cannot capture
+
+These fingers are **tendon-driven** — a cable runs the length of each one — so
+the ratio only holds in free space. Under contact the proximal joint stops at
+the object and the distal ones keep closing: the finger conforms, which is the
+point of an underactuated hand.
+
+`<mimic>` cannot express that. It holds the ratio rigidly, so the model is right
+for retargeting and free-space reach and **wrong for grasp physics** — a
+simulated finger will push an object away where the real one would wrap it.
+Measure the free-space ratio, use it for the kinematics, and model the tendon
+properly in whatever simulator handles the contact (MuJoCo tendons plus equality
+constraints; PhysX fixed tendons, which is how Isaac Lab's Shadow Hand does it).
+ALLEX hits the same wall and says so: exact model in MJCF, linear approximation
+in URDF and USD.
 
 **If the fingers on your build really are rigid**, set both multipliers to 0 and
 regenerate — the model goes back to what it was, and the pinch conclusion goes
