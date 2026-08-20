@@ -84,3 +84,82 @@ wrist:
 hand_interface:
   xyz: [0.0, 0.0, 0.0]
   rpy: [0.0, 0.0, 0.0]
+
+# ======================= Which DexHand this build is =======================
+# The vendored description is the full V2 hand: 16 independently actuated
+# joints plus 5 that mimic. This build is the 8-servo variant, and until now
+# that variant was a URDF sitting on one developer's laptop
+# (dexhand_moveit_ws/.../dexhandv2_right_8servo.urdf), which meant regenerating
+# on any other machine silently produced a different robot. It is described
+# here instead so the generated URDFs are reproducible from a fresh clone.
+#
+# Three kinds of joint:
+#
+#   actuated  a servo drives it
+#   coupled   no servo; a linkage ties it to another joint, emitted as <mimic>
+#   frozen    no servo and no linkage; welded at the angle given
+#
+# ---------------------------------------------------------------------------
+# THE COUPLING RATIOS ARE NOT MEASURED. They say a finger curls proportionally
+# along its length, which is the right *shape* for a linkage-driven finger and
+# the wrong precision. Measure them before trusting fingertip positions:
+# command each knuckle across its travel with the hand held still, capture the
+# fingertip, and fit -- scripts/motion/fit_finger_coupling.py does the fit.
+#
+# For scale, WIRobotics' ALLEX publishes measured couplings for a comparable
+# anthropomorphic finger: DIP follows PIP at 0.656 and the thumb IP follows its
+# MCP at 0.732, both least-squares linear fits through the origin of a quartic.
+# Ratios near 1 here are placeholders, not agreement with that.
+# ---------------------------------------------------------------------------
+hand:
+  fingers: [Index, Middle, Ring, Pinky]
+
+  # Servo travel, tighter than the upstream description's (which is the
+  # mechanism's range, not the 8-servo build's): pitch 0.95 vs 1.309 rad,
+  # yaw 0.30 vs 0.349.
+  actuated:
+    Pitch: {lower: 0.0, upper: 0.95}
+    Yaw: {lower: -0.30, upper: 0.30}
+
+  # The curl. Driving the knuckle carries the middle phalanx with it, and that
+  # carries the tip. Without these the fingers are rigid 75 mm links and no
+  # amount of retargeting can make them close.
+  #
+  # Upstream already declares DIP <- Flexor, but its <mimic> names the driver
+  # `Index_Flexor` where the joint is `R_Index_Flexor`, so every one of those
+  # tags refers to a joint that does not exist. Re-emitted here with the names
+  # the model actually uses.
+  coupled:
+    Flexor: {driver: Pitch, multiplier: 1.0}
+    DIP: {driver: Flexor, multiplier: 1.0}
+
+  # No servo reaches the thumb, so its posture is decided when the hand is
+  # assembled and the URDF should say which posture that is. Joint zero is the
+  # fully extended, splayed pose: it puts the thumb tip 85 mm from the nearest
+  # point any fingertip can reach, so nothing the hand does can oppose it.
+  #
+  # scripts/motion/analyze_hand.py searches for the posture that closes that gap
+  # as far as the mechanism allows. Set these to the angles the thumb is
+  # actually built at -- the generator welds the joint with the rotation baked
+  # into its origin, so a non-zero angle here moves the thumb.
+  # Fingertip frames. The hand description has no frame at the working point of
+  # a finger -- `Index_Tip_1` is the tip *link*, whose origin is at its base --
+  # so retargeting and IK have nothing to aim at. These add one per finger at
+  # the pad. Offset is in the tip link's frame, measured from the mesh.
+  #
+  # These also used to arrive from the off-repo 8-servo URDF, which is why a
+  # regeneration elsewhere produced a hand nothing could target.
+  tip_frames:
+    offset: [-0.0011, -0.00309, 0.0179]
+    parents:
+      Index: Index_Tip_1
+      Middle: Midle_Tip_1        # upstream's spelling, not a typo here
+      Ring: Ring_Tip_1
+      Pinky: Pinky_Tip_1
+
+  thumb:
+    R_Thumb_Yaw: 0.0
+    R_Thumb_Roll: 0.0
+    R_Thumb_Pitch: 0.0
+    R_Thumb_Flexor: 0.0
+    R_Thumb_DIP: 0.0

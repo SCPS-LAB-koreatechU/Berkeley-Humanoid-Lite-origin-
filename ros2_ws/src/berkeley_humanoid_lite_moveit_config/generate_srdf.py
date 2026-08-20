@@ -27,9 +27,12 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 DESCRIPTION = HERE.parent / "berkeley_humanoid_lite_description"
-DEXHAND_SRDF = Path(
-    "/home/scps-ubuntu1/Desktop/dexhand_moveit_ws/src/dexhand_moveit_config"
-    "/config/dexhandv2_right_8servo.srdf"
+# The DexHand's own SRDF: the source of the 12 grip presets and of the 194
+# intra-hand collision pairs its Setup Assistant computed against real mesh
+# geometry. Vendored, because it used to be read from one developer's laptop and
+# a regeneration anywhere else simply failed.
+DEXHAND_SRDF = Path(__file__).resolve().parents[2] / (
+    "vendor/dexhandv2_description/config/dexhandv2_right_8servo.srdf"
 )
 
 MODELS = {

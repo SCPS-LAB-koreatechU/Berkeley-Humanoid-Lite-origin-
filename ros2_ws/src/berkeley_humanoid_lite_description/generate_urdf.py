@@ -50,14 +50,9 @@ UPSTREAM = (
 # Vendored, not committed: see fetch_vendor.sh and the licence note there.
 VENDOR = HERE.parent.parent / "vendor"
 DEXHAND = VENDOR / "dexhandv2_description/urdf/dexhandv2_right.urdf"
-# The 8-servo variant lives in the user's dexhand MoveIt config rather than
-# upstream; fall back to it when present so the actuated model stays the default.
-DEXHAND_8SERVO = Path(
-    "/home/scps-ubuntu1/Desktop/dexhand_moveit_ws/src/dexhand_moveit_config"
-    "/config/dexhandv2_right_8servo.urdf"
-)
-if DEXHAND_8SERVO.is_file():
-    DEXHAND = DEXHAND_8SERVO
+# The 8-servo build used to come from a URDF on one developer's laptop, so a
+# regeneration anywhere else silently produced the full 16-joint hand instead.
+# The variant is described in arm_attachment.yaml now; see apply_hand_variant.
 ATTACHMENT_CONFIG = HERE / "config" / "arm_attachment.yaml"
 # Vendored DexHand V1 description: the real source of the wrist kinematics.
 DEXHAND_V1 = {
@@ -120,6 +115,38 @@ def side_name(name: str, side: str) -> str:
     if side == "right":
         return name
     return "L_" + name[2:] if name.startswith("R_") else "L_" + name
+
+
+def rotation_from_rpy(rpy) -> np.ndarray:
+    """URDF fixed-axis roll-pitch-yaw to a rotation matrix."""
+    roll, pitch, yaw = (float(v) for v in rpy)
+    cr, sr, cp, sp, cy, sy = (np.cos(roll), np.sin(roll), np.cos(pitch),
+                              np.sin(pitch), np.cos(yaw), np.sin(yaw))
+    return np.array([
+        [cy * cp, cy * sp * sr - sy * cr, cy * sp * cr + sy * sr],
+        [sy * cp, sy * sp * sr + cy * cr, sy * sp * cr - cy * sr],
+        [-sp, cp * sr, cp * cr],
+    ])
+
+
+def rpy_from_rotation(R: np.ndarray) -> list[float]:
+    """Inverse of `rotation_from_rpy`, picking the branch with pitch in +/-90."""
+    pitch = np.arctan2(-R[2, 0], np.hypot(R[0, 0], R[1, 0]))
+    if np.isclose(abs(R[2, 0]), 1.0):        # gimbal lock: fold roll into yaw
+        return [0.0, float(pitch), float(np.arctan2(-R[0, 1], R[1, 1]))]
+    return [float(np.arctan2(R[2, 1], R[2, 2])), float(pitch),
+            float(np.arctan2(R[1, 0], R[0, 0]))]
+
+
+def rotation_about(axis, angle: float) -> np.ndarray:
+    """Rodrigues' formula, for baking a joint angle into a fixed transform."""
+    a = np.asarray(axis, dtype=float)
+    norm = np.linalg.norm(a)
+    if norm < 1e-12 or abs(angle) < 1e-15:
+        return np.eye(3)
+    k = a / norm
+    K = np.array([[0, -k[2], k[1]], [k[2], 0, -k[0]], [-k[1], k[0], 0]])
+    return np.eye(3) + np.sin(angle) * K + (1 - np.cos(angle)) * (K @ K)
 
 
 def mirror_vector(xyz) -> list[float]:
@@ -185,8 +212,9 @@ def load_humanoid(config: dict | None = None) -> ET.Element:
     return root
 
 
-def load_dexhand(side: str) -> ET.Element:
-    """DexHand for one side: meshes repointed, and mirrored/renamed if left."""
+def load_dexhand(side: str, config: dict | None = None) -> ET.Element:
+    """DexHand for one side: meshes repointed, mirrored/renamed if left, and
+    reduced to the servo variant this robot is built with."""
     if not DEXHAND.is_file():
         raise SystemExit(
             f"DexHand URDF not found: {DEXHAND}\n"
@@ -236,7 +264,138 @@ def load_dexhand(side: str) -> ET.Element:
                         np.fromstring(origin.get("xyz", "0 0 0"), sep=" "))))
                     origin.set("rpy", as_text(mirror_rpy(
                         np.fromstring(origin.get("rpy", "0 0 0"), sep=" "))))
+
+    # After renaming, so the config's `R_` names map onto whichever side this is.
+    if config is not None:
+        apply_hand_variant(root, config, side)
     return root
+
+
+def apply_hand_variant(root: ET.Element, config: dict, side: str) -> None:
+    """Reduce the full V2 hand description to the variant this robot has.
+
+    The vendored description is the complete hand: 16 independently actuated
+    joints plus 5 that mimic. This build has 8 servos, and which joints those
+    drive -- and what the rest do -- is a property of the hardware, so it is read
+    from `arm_attachment.yaml` rather than from whichever URDF happens to be on
+    the machine doing the generating.
+
+    Three outcomes per joint:
+
+    * **actuated** -- stays revolute, limits narrowed to the servo's travel.
+    * **coupled** -- stays revolute and gains a `<mimic>` naming its driver. This
+      is what makes the fingers curl: without it the flexor and DIP are welded
+      and a finger is one rigid 75 mm link that cannot close on anything.
+    * **frozen** -- becomes `fixed`, with its angle baked into the joint origin
+      so a non-zero angle actually moves the link. Freezing at zero is not
+      neutral; for the thumb, zero is the fully extended splayed pose.
+
+    Upstream's own DIP mimics are re-emitted rather than kept: they name the
+    driver `Index_Flexor` where the joint is `R_Index_Flexor`, so as shipped
+    every one of them points at a joint that does not exist.
+    """
+    hand = config.get("hand")
+    if not hand:
+        return
+
+    joints = {j.get("name"): j for j in root.iter("joint")}
+    plan: dict[str, tuple] = {}
+    for finger in hand["fingers"]:
+        for row, limits in hand["actuated"].items():
+            plan[side_name(f"R_{finger}_{row}", side)] = ("actuated", limits)
+        for row, rule in hand["coupled"].items():
+            driver = side_name(f"R_{finger}_{rule['driver']}", side)
+            plan[side_name(f"R_{finger}_{row}", side)] = (
+                "coupled", driver, float(rule["multiplier"]))
+    for name, angle in (hand.get("thumb") or {}).items():
+        plan[side_name(name, side)] = ("frozen", float(angle))
+
+    unknown = sorted(set(plan) - set(joints))
+    if unknown:
+        raise SystemExit(f"config names DexHand joints that do not exist: {unknown}")
+
+    # Couplings resolve in dependency order so a chained driver (DIP <- Flexor
+    # <- Pitch) inherits limits that already reflect the stage above it.
+    for name in _coupling_order(plan):
+        joint = joints[name]
+        action = plan[name]
+        if action[0] == "actuated":
+            _set_limits(joint, action[1]["lower"], action[1]["upper"])
+        elif action[0] == "coupled":
+            _, driver, multiplier = action
+            lower, upper = _limits_of(joints[driver])
+            span = sorted((lower * multiplier, upper * multiplier))
+            _set_limits(joint, *span)
+            for existing in joint.findall("mimic"):
+                joint.remove(existing)
+            ET.SubElement(joint, "mimic", {
+                "joint": driver, "multiplier": f"{multiplier:.12g}", "offset": "0",
+            })
+        else:
+            _freeze(joint, action[1])
+
+    # `<transmission>` blocks name joints without the `R_` prefix and there is no
+    # ros2_control in this workspace, so they describe nothing that exists.
+    for transmission in root.findall("transmission"):
+        root.remove(transmission)
+
+    tips = hand.get("tip_frames")
+    if tips:
+        offset = as_text(tips["offset"])
+        for finger, parent in tips["parents"].items():
+            frame = side_name(f"R_{finger}_tip_frame", side)
+            add_frame(root, frame)
+            joint = ET.SubElement(root, "joint", {
+                "name": side_name(f"R_{finger}_tip_fixed", side), "type": "fixed"})
+            ET.SubElement(joint, "origin", {"xyz": offset, "rpy": "0 0 0"})
+            ET.SubElement(joint, "parent", {"link": side_name(parent, side)})
+            ET.SubElement(joint, "child", {"link": frame})
+
+
+def _coupling_order(plan: dict) -> list[str]:
+    """Joint names with every driver ahead of the joint it drives."""
+    done, order = set(), []
+
+    def visit(name: str) -> None:
+        if name in done or name not in plan:
+            return
+        done.add(name)
+        if plan[name][0] == "coupled":
+            visit(plan[name][1])
+        order.append(name)
+
+    for name in plan:
+        visit(name)
+    return order
+
+
+def _limits_of(joint: ET.Element) -> tuple[float, float]:
+    limit = joint.find("limit")
+    if limit is None:
+        raise SystemExit(f"joint {joint.get('name')!r} drives a coupling but has no limits")
+    return float(limit.get("lower")), float(limit.get("upper"))
+
+
+def _set_limits(joint: ET.Element, lower: float, upper: float) -> None:
+    limit = joint.find("limit")
+    limit.set("lower", f"{lower:.12g}")
+    limit.set("upper", f"{upper:.12g}")
+
+
+def _freeze(joint: ET.Element, angle: float) -> None:
+    """Weld a joint at `angle`, composing that rotation into its origin."""
+    axis = joint.find("axis")
+    if axis is not None and abs(angle) > 1e-15:
+        origin = joint.find("origin")
+        if origin is None:
+            origin = ET.SubElement(joint, "origin", {"xyz": "0 0 0", "rpy": "0 0 0"})
+        rotation = rotation_from_rpy(np.fromstring(origin.get("rpy", "0 0 0"), sep=" "))
+        turn = rotation_about(np.fromstring(axis.get("xyz"), sep=" "), angle)
+        origin.set("rpy", as_text(rpy_from_rotation(rotation @ turn)))
+    joint.set("type", "fixed")
+    for tag in ("axis", "limit", "mimic"):
+        for element in joint.findall(tag):
+            joint.remove(element)
 
 
 def strip_legs(robot: ET.Element) -> None:
@@ -525,21 +684,21 @@ def main() -> None:
     v2_config["wrist"]["enabled"] = False
     v2_config["hand_interface"] = {"xyz": [0, 0, 0], "rpy": [0, 0, 0]}
     robot = load_humanoid(config)
-    attach_arm(robot, "right", v2_config, load_dexhand("right"))
+    attach_arm(robot, "right", v2_config, load_dexhand("right", config))
     write(robot, OUTPUT_DIR / "berkeley_humanoid_lite_dexhand.urdf",
           "DexHand v2 (8 servo) welded to the right forearm.")
 
     # Both arms with the V1 forearm and wrist.
     robot = load_humanoid(config)
     for side in ("right", "left"):
-        attach_arm(robot, side, config, load_dexhand(side))
+        attach_arm(robot, side, config, load_dexhand(side, config))
     write(robot, OUTPUT_DIR / "berkeley_humanoid_lite_v1arm.urdf",
           "V1 forearm and 3 DOF wrist on both arms, DexHand v2 fingers.")
 
     # Same, with the right mount exposed as sliders.
     robot = load_humanoid(config)
-    attach_arm(robot, "right", config, load_dexhand("right"), tunable=True)
-    attach_arm(robot, "left", config, load_dexhand("left"))
+    attach_arm(robot, "right", config, load_dexhand("right", config), tunable=True)
+    attach_arm(robot, "left", config, load_dexhand("left", config))
     write(robot, OUTPUT_DIR / "berkeley_humanoid_lite_tuning.urdf",
           "Right mount exposed as 6 sliders; not for planning.")
 

@@ -140,9 +140,14 @@ class HandModel:
         return {
             "n_dof": self.n_dof,
             "joint_names": list(self.joint_names),
+            "coupled_joints": sorted(
+                f"{n} <- {j.mimic[0]} x{j.mimic[1]:g}"
+                for n, j in self.chain.joints.items()
+                if j.mimic is not None and n.startswith("R_")
+            ),
             "frozen_joints": sorted(
                 n for n, j in self.chain.joints.items()
-                if not j.actuated and n.startswith("R_") and "tip_fixed" not in n
+                if not j.movable and n.startswith("R_") and "tip_fixed" not in n
             ),
             "per_finger": per_finger,
             "index_pinky_span_m": (float(span.min()), float(span.max())),

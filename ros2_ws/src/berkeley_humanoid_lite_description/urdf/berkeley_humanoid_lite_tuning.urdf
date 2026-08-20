@@ -470,6 +470,142 @@
   <material name="silver">
     <color rgba="0.700 0.700 0.700 1.000" />
   </material>
+  <gazebo>
+    <plugin filename="libgazebo_ros_control.so" name="control" />
+  </gazebo>
+  <gazebo reference="base_link">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+    <gravity>true</gravity>
+  </gazebo>
+  <gazebo reference="Index_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Middle_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Index_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Middle_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Index_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Midle_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Prox_KC_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Dist_KC_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Index_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Middle_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
   <link name="base_link">
     <inertial>
       <origin rpy="0 0 0" xyz="0.007689524166402843 -0.0014012994166675186 0.03600705995032628" />
@@ -915,68 +1051,92 @@
     <parent link="Index_Knuckle_Cross_1" />
     <child link="Index_Knuckle_1" />
     <axis xyz="0.087537 0.996161 -0.000428" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
   <joint name="R_Middle_Pitch" type="revolute">
     <origin rpy="0 0 0" xyz="-0.0075 0.0048 0.004" />
     <parent link="Middle_Knuckle_Cross_1" />
     <child link="Middle_Knuckle_1" />
     <axis xyz="-0.0 1.0 0.0" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
   <joint name="R_Ring_Pitch" type="revolute">
     <origin rpy="0 0 0" xyz="-0.007904 0.004129 0.003972" />
     <parent link="Ring_Knuckle_Cross_1" />
     <child link="Ring_Knuckle_1" />
     <axis xyz="-0.08702 0.996207 -0.00031" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
   <joint name="R_Pinky_Pitch" type="revolute">
     <origin rpy="0 0 0" xyz="-0.008147 0.003385 0.004177" />
     <parent link="Pinky_Knuckle_Cross_1" />
     <child link="Pinky_Knuckle_1" />
     <axis xyz="-0.178318 0.983965 0.003854" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
-  <joint name="R_Index_Flexor" type="fixed">
+  <joint name="R_Index_Flexor" type="revolute">
     <origin rpy="0 0 0" xyz="-0.003532 0.002993 0.045018" />
     <parent link="Index_Knuckle_1" />
     <child link="Index_Middle_1" />
+    <axis xyz="0.087537 0.996161 -0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Index_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="R_Middle_Flexor" type="fixed">
+  <joint name="R_Middle_Flexor" type="revolute">
     <origin rpy="0 0 0" xyz="-0.004 0.00265 0.045" />
     <parent link="Middle_Knuckle_1" />
     <child link="Middle_Middle_1" />
+    <axis xyz="-0.0 1.0 0.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Middle_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="R_Ring_Flexor" type="fixed">
+  <joint name="R_Ring_Flexor" type="revolute">
     <origin rpy="0 0 0" xyz="-0.004376 0.002292 0.044985" />
     <parent link="Ring_Knuckle_1" />
     <child link="Ring_Middle_1" />
+    <axis xyz="-0.08702 0.996207 -0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Ring_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="R_Pinky_Flexor" type="fixed">
+  <joint name="R_Pinky_Flexor" type="revolute">
     <origin rpy="0 0 0" xyz="-0.003435 0.001894 0.045085" />
     <parent link="Pinky_Knuckle_1" />
     <child link="Pinky_Middle_1" />
+    <axis xyz="-0.178318 0.983965 0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Pinky_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="R_Index_DIP" type="fixed">
+  <joint name="R_Index_DIP" type="revolute">
     <origin rpy="0 0 0" xyz="-0.000221 -0.004184 0.030001" />
     <parent link="Index_Middle_1" />
     <child link="Index_Tip_1" />
+    <axis xyz="0.087537 0.996161 -0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Index_Flexor" multiplier="1" offset="0" />
   </joint>
-  <joint name="R_Middle_DIP" type="fixed">
+  <joint name="R_Middle_DIP" type="revolute">
     <origin rpy="0 0 0" xyz="0.0 -0.0042 0.03" />
     <parent link="Middle_Middle_1" />
     <child link="Midle_Tip_1" />
+    <axis xyz="-0.0 1.0 0.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Middle_Flexor" multiplier="1" offset="0" />
   </joint>
-  <joint name="R_Ring_DIP" type="fixed">
+  <joint name="R_Ring_DIP" type="revolute">
     <origin rpy="0 0 0" xyz="0.000259 -0.004184 0.030001" />
     <parent link="Ring_Middle_1" />
     <child link="Ring_Tip_1" />
+    <axis xyz="-0.08702 0.996207 -0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Ring_Flexor" multiplier="1" offset="0" />
   </joint>
-  <joint name="R_Pinky_DIP" type="fixed">
+  <joint name="R_Pinky_DIP" type="revolute">
     <origin rpy="0 0 0" xyz="0.001397 -0.004132 0.029977" />
     <parent link="Pinky_Middle_1" />
     <child link="Pinky_Tip_1" />
+    <axis xyz="-0.178318 0.983965 0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="R_Pinky_Flexor" multiplier="1" offset="0" />
   </joint>
   <joint name="R_Thumb_Yaw" type="fixed">
     <origin rpy="0 0 0" xyz="0.042207 0.017744 -0.001358" />
@@ -1003,28 +1163,28 @@
     <parent link="base_link" />
     <child link="Index_Knuckle_Cross_1" />
     <axis xyz="0.996149 -0.087538 -0.004875" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="R_Middle_Yaw" type="revolute">
     <origin rpy="0 0 0" xyz="0.017 0.00725 0.090983" />
     <parent link="base_link" />
     <child link="Middle_Knuckle_Cross_1" />
     <axis xyz="1.0 0.0 -0.0" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="R_Ring_Yaw" type="revolute">
     <origin rpy="0 0 0" xyz="0.018517 -0.015063 0.087139" />
     <parent link="base_link" />
     <child link="Ring_Knuckle_Cross_1" />
     <axis xyz="0.9962 0.08702 0.003551" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="R_Pinky_Yaw" type="revolute">
     <origin rpy="0 0 0" xyz="0.021743 -0.035807 0.078606" />
     <parent link="base_link" />
     <child link="Pinky_Knuckle_Cross_1" />
     <axis xyz="0.983736 0.178359 -0.021263" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="R_Thumb_Pitch" type="fixed">
     <origin rpy="0 0 0" xyz="0.005242 0.0081 0.011134" />
@@ -1156,6 +1316,142 @@
   <material name="L_silver">
     <color rgba="0.700 0.700 0.700 1.000" />
   </material>
+  <gazebo>
+    <plugin filename="libgazebo_ros_control.so" name="control" />
+  </gazebo>
+  <gazebo reference="base_link">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+    <gravity>true</gravity>
+  </gazebo>
+  <gazebo reference="Index_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Middle_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Index_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Middle_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Index_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Midle_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Prox_KC_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Dist_KC_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Middle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Tip_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Index_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Middle_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Ring_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Pinky_Knuckle_Cross_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
+  <gazebo reference="Thumb_Knuckle_1">
+    <material>Gazebo/Silver</material>
+    <mu1>0.2</mu1>
+    <mu2>0.2</mu2>
+    <selfCollide>true</selfCollide>
+  </gazebo>
   <link name="L_base_link">
     <inertial>
       <origin rpy="-0 0 -0" xyz="0.0076895241664 0.00140129941667 0.0360070599503" />
@@ -1601,68 +1897,92 @@
     <parent link="L_Index_Knuckle_Cross_1" />
     <child link="L_Index_Knuckle_1" />
     <axis xyz="-0.087537 0.996161 0.000428" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
   <joint name="L_Middle_Pitch" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.0075 -0.0048 0.004" />
     <parent link="L_Middle_Knuckle_Cross_1" />
     <child link="L_Middle_Knuckle_1" />
     <axis xyz="0 1 -0" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
   <joint name="L_Ring_Pitch" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.007904 -0.004129 0.003972" />
     <parent link="L_Ring_Knuckle_Cross_1" />
     <child link="L_Ring_Knuckle_1" />
     <axis xyz="0.08702 0.996207 0.00031" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
   <joint name="L_Pinky_Pitch" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.008147 -0.003385 0.004177" />
     <parent link="L_Pinky_Knuckle_Cross_1" />
     <child link="L_Pinky_Knuckle_1" />
     <axis xyz="0.178318 0.983965 -0.003854" />
-    <limit effort="1.5" lower="0.0" upper="0.950000" velocity="3.0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
   </joint>
-  <joint name="L_Index_Flexor" type="fixed">
+  <joint name="L_Index_Flexor" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.003532 -0.002993 0.045018" />
     <parent link="L_Index_Knuckle_1" />
     <child link="L_Index_Middle_1" />
+    <axis xyz="-0.087537 0.996161 0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Index_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="L_Middle_Flexor" type="fixed">
+  <joint name="L_Middle_Flexor" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.004 -0.00265 0.045" />
     <parent link="L_Middle_Knuckle_1" />
     <child link="L_Middle_Middle_1" />
+    <axis xyz="0 1 -0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Middle_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="L_Ring_Flexor" type="fixed">
+  <joint name="L_Ring_Flexor" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.004376 -0.002292 0.044985" />
     <parent link="L_Ring_Knuckle_1" />
     <child link="L_Ring_Middle_1" />
+    <axis xyz="0.08702 0.996207 0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Ring_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="L_Pinky_Flexor" type="fixed">
+  <joint name="L_Pinky_Flexor" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.003435 -0.001894 0.045085" />
     <parent link="L_Pinky_Knuckle_1" />
     <child link="L_Pinky_Middle_1" />
+    <axis xyz="0.178318 0.983965 -0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Pinky_Pitch" multiplier="1" offset="0" />
   </joint>
-  <joint name="L_Index_DIP" type="fixed">
+  <joint name="L_Index_DIP" type="revolute">
     <origin rpy="-0 0 -0" xyz="-0.000221 0.004184 0.030001" />
     <parent link="L_Index_Middle_1" />
     <child link="L_Index_Tip_1" />
+    <axis xyz="-0.087537 0.996161 0.000428" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Index_Flexor" multiplier="1" offset="0" />
   </joint>
-  <joint name="L_Middle_DIP" type="fixed">
+  <joint name="L_Middle_DIP" type="revolute">
     <origin rpy="-0 0 -0" xyz="0 0.0042 0.03" />
     <parent link="L_Middle_Middle_1" />
     <child link="L_Midle_Tip_1" />
+    <axis xyz="0 1 -0" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Middle_Flexor" multiplier="1" offset="0" />
   </joint>
-  <joint name="L_Ring_DIP" type="fixed">
+  <joint name="L_Ring_DIP" type="revolute">
     <origin rpy="-0 0 -0" xyz="0.000259 0.004184 0.030001" />
     <parent link="L_Ring_Middle_1" />
     <child link="L_Ring_Tip_1" />
+    <axis xyz="0.08702 0.996207 0.00031" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Ring_Flexor" multiplier="1" offset="0" />
   </joint>
-  <joint name="L_Pinky_DIP" type="fixed">
+  <joint name="L_Pinky_DIP" type="revolute">
     <origin rpy="-0 0 -0" xyz="0.001397 0.004132 0.029977" />
     <parent link="L_Pinky_Middle_1" />
     <child link="L_Pinky_Tip_1" />
+    <axis xyz="0.178318 0.983965 -0.003854" />
+    <limit effort="100" lower="0" upper="0.95" velocity="100" />
+    <mimic joint="L_Pinky_Flexor" multiplier="1" offset="0" />
   </joint>
   <joint name="L_Thumb_Yaw" type="fixed">
     <origin rpy="-0 0 -0" xyz="0.042207 -0.017744 -0.001358" />
@@ -1689,28 +2009,28 @@
     <parent link="L_base_link" />
     <child link="L_Index_Knuckle_Cross_1" />
     <axis xyz="-0.996149 -0.087538 0.004875" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="L_Middle_Yaw" type="revolute">
     <origin rpy="-0 0 -0" xyz="0.017 -0.00725 0.090983" />
     <parent link="L_base_link" />
     <child link="L_Middle_Knuckle_Cross_1" />
     <axis xyz="-1 0 0" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="L_Ring_Yaw" type="revolute">
     <origin rpy="-0 0 -0" xyz="0.018517 0.015063 0.087139" />
     <parent link="L_base_link" />
     <child link="L_Ring_Knuckle_Cross_1" />
     <axis xyz="-0.9962 0.08702 -0.003551" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="L_Pinky_Yaw" type="revolute">
     <origin rpy="-0 0 -0" xyz="0.021743 0.035807 0.078606" />
     <parent link="L_base_link" />
     <child link="L_Pinky_Knuckle_Cross_1" />
     <axis xyz="-0.983736 0.178359 0.021263" />
-    <limit effort="1.5" lower="-0.300000" upper="0.300000" velocity="3.0" />
+    <limit effort="100" lower="-0.3" upper="0.3" velocity="100" />
   </joint>
   <joint name="L_Thumb_Pitch" type="fixed">
     <origin rpy="-0 0 -0" xyz="0.005242 -0.0081 0.011134" />
@@ -1719,25 +2039,25 @@
   </joint>
   <link name="L_Index_tip_frame" />
   <joint name="L_Index_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 0.00309 0.0179" rpy="-0 0 -0" />
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
     <parent link="L_Index_Tip_1" />
     <child link="L_Index_tip_frame" />
   </joint>
   <link name="L_Middle_tip_frame" />
   <joint name="L_Middle_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 0.00309 0.0179" rpy="-0 0 -0" />
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
     <parent link="L_Midle_Tip_1" />
     <child link="L_Middle_tip_frame" />
   </joint>
   <link name="L_Ring_tip_frame" />
   <joint name="L_Ring_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 0.00309 0.0179" rpy="-0 0 -0" />
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
     <parent link="L_Ring_Tip_1" />
     <child link="L_Ring_tip_frame" />
   </joint>
   <link name="L_Pinky_tip_frame" />
   <joint name="L_Pinky_tip_fixed" type="fixed">
-    <origin xyz="-0.0011 0.00309 0.0179" rpy="-0 0 -0" />
+    <origin xyz="-0.0011 -0.00309 0.0179" rpy="0 0 0" />
     <parent link="L_Pinky_Tip_1" />
     <child link="L_Pinky_tip_frame" />
   </joint>

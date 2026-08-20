@@ -111,13 +111,22 @@ def test_aperture_and_curl_are_invariant_to_pose_and_size(retargeter):
 
 
 def test_confidence_zero_lets_a_lost_fingertip_go(retargeter):
-    """A dropped keypoint must not drag the servo to wherever the stale value
-    was; it should fall back on smoothness and the rest pose instead."""
+    """A dropped keypoint must stop influencing the solve entirely.
+
+    Not that the servo lands on the truth -- with the keypoint gone there is
+    nothing to land on, and it falls back on smoothness and the rest pose. What
+    must hold is that whatever garbage the tracker left behind changes nothing.
+    """
     weighted = HandRetargeter(hand=retargeter.hand)
     lower, upper = retargeter.hand.limits
     q = np.random.default_rng(2).uniform(lower, upper)
     targets = retargeter.targets(synthetic_hand(retargeter, q, seed=2))
-    targets[0] += 0.5                                    # index target now absurd
-    trusted, _ = weighted.solve_targets(targets, confidence=[1, 1, 1, 1])
-    ignored, _ = weighted.solve_targets(targets, confidence=[0, 1, 1, 1])
-    assert np.abs(ignored[0] - q[0]) < np.abs(trusted[0] - q[0])
+
+    def solve(index_target, confidence):
+        corrupted = targets.copy()
+        corrupted[0] = index_target
+        return weighted.solve_targets(corrupted, q_init=q, confidence=confidence)[0]
+
+    a, b = targets[0] + 0.5, targets[0] - 0.5
+    assert np.allclose(solve(a, [0, 1, 1, 1]), solve(b, [0, 1, 1, 1]), atol=1e-6)
+    assert not np.allclose(solve(a, [1, 1, 1, 1]), solve(b, [1, 1, 1, 1]), atol=1e-3)

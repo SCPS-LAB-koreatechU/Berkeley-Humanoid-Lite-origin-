@@ -24,31 +24,58 @@ suggests.
 
 ## What the hand actually is
 
-`generate_urdf.py` builds against the 8-servo DexHand variant. Of the hand's 21
-joints it leaves **8 actuated** and freezes **13** to `type="fixed"`:
+The 8-servo DexHand variant, described in
+`ros2_ws/src/berkeley_humanoid_lite_description/config/arm_attachment.yaml`.
+Of the hand's 21 joints:
 
 | | |
 | --- | --- |
-| Actuated | `R_{Index,Middle,Ring,Pinky}_{Pitch,Yaw}` — flexion 0…0.95 rad, spread ±0.30 rad |
-| Frozen | the entire thumb (5 joints), every flexor and every DIP |
+| **Actuated** (8) | `R_{Index,Middle,Ring,Pinky}_{Pitch,Yaw}` — flexion 0…0.95 rad, spread ±0.30 rad |
+| **Coupled** (8) | each finger's flexor follows its knuckle, and its DIP follows the flexor |
+| **Frozen** (5) | the whole thumb, welded at whatever angles the config names |
 
-Three consequences, all measured rather than assumed:
+The coupling is what makes a finger curl: one servo carries the middle phalanx
+and the tip with it, for 163° of total flexion at full travel. Without it a
+finger is a rigid 75 mm rod on one hinge and no retargeting can close it.
 
-- **Fingers are rigid.** With the flexor and DIP fixed, a finger is one 75 mm
-  link on one hinge. It cannot curl. A fist is not a reachable pose.
-- **The hand cannot pinch.** The closest any fingertip comes to the frozen thumb
-  tip is **85.5 mm** as the URDF ships. Searching every posture the thumb
-  mechanism could be assembled in only gets that to **43.3 mm**. Precision
-  pick-and-place is out; caging an object against the palm is what is left.
-- **The frozen thumb posture is a free design choice, currently taken badly.**
-  Joint zero is the fully extended, splayed pose — the worst of the available
-  options. `best_thumb_posture()` reports the angles that halve the gap. No
-  servo is involved; this is a matter of how the part is fitted, and then of
-  freezing the URDF at those angles instead of at zero.
+Measured with `analyze_hand.py`, coupled versus rigid:
 
-So finger detail lost between the studio and the robot is mostly lost at the
-robot. Sharpening the capture side pays off in the arms and the body; on this
-hand it does not.
+| | rigid | coupled |
+| --- | ---: | ---: |
+| Fingertip travel | 101 mm | **137 mm** |
+| Index-to-pinky span | 9–133 mm | 11–146 mm |
+| Gap to the thumb, as configured | 85.5 mm | **51.8 mm** |
+| Gap to the thumb, best posture | 43.3 mm | **0.0 mm** |
+
+That last row is the one that matters: with the fingers curling, a fingertip can
+reach the thumb — **pinch grasps become possible**, where with rigid fingers no
+thumb posture could produce one. But not at the posture the config ships, which
+is joint zero: the fully extended, splayed pose, 52 mm short. No servo reaches
+the thumb, so this is a build-time choice. `analyze_hand.py` prints the angles
+that close it; set them under `hand.thumb` and regenerate.
+
+### The ratios are not measured
+
+`Flexor ← Pitch` and `DIP ← Flexor` both ship at 1.0. That is the right *shape*
+for a linkage-driven finger and the wrong precision, and every number in the
+table above depends on it. For scale, WIRobotics' ALLEX publishes measured
+couplings for a comparable anthropomorphic finger — `DIP ← PIP` at **0.656** and
+thumb `IP ← MCP` at **0.732**, linear fits through the origin of a quartic — so
+ratios of 1.0 should be read as placeholders, not as agreement.
+
+Measure them:
+
+```bash
+python3 scripts/motion/fit_finger_coupling.py measurements.csv
+```
+
+It fits both stages against the model's own forward kinematics and prints the
+YAML to paste back. On synthetic data with 0.3 mm of noise it recovers a 0.83
+ratio as 0.824.
+
+**If the fingers on your build really are rigid**, set both multipliers to 0 and
+regenerate — the model goes back to what it was, and the pinch conclusion goes
+with it.
 
 ## Pipeline
 
@@ -107,6 +134,8 @@ environment; this package is what feeds it.
 - **Body retargeting.** Only the hand is done. The 22 body joints in
   `configs/policy_humanoid.yaml` want an IK-based retarget; `scripts/teleop/`
   already carries a pink/pinocchio solver to build on.
+- **Grasp reward.** The coupling makes pinch reachable; nothing yet decides when
+  to use it.
 - **The RL tracking task.** A motion-tracking environment alongside
   `tasks/locomotion/velocity`, reusing the existing rsl_rl plumbing.
 
@@ -120,3 +149,9 @@ environment; this package is what feeds it.
   for `dropout`.
 - The hand analysis assumes the mount and the URDF are right. Both carry known
   caveats — see the Limitations section of `ros2_ws/README.md`.
+- The coupling ratios are estimates, and the reachability numbers move with
+  them. See "The ratios are not measured" above.
+- Isaac Lab's URDF importer has historically not honoured `<mimic>`. The
+  coupling is resolved in `Chain.resolve()` for anything that goes through this
+  package, but a policy trained on an imported USD may be commanding a hand
+  whose fingers do not curl. Check the imported articulation before trusting it.

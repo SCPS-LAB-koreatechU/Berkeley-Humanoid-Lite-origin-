@@ -44,6 +44,20 @@ def palm_plane(hand: HandModel) -> tuple[np.ndarray, np.ndarray]:
     return centre, normal
 
 
+#: Below this the fingertip and the thumb can meet, so a pinch closes.
+PINCH_GAP_M = 0.005
+
+
+def _verdict(at_zero: float, best: float) -> str:
+    if at_zero <= PINCH_GAP_M:
+        return "Configured posture already opposes: pinch grasps are reachable."
+    if best <= PINCH_GAP_M:
+        return ("Pinch is reachable, but not at the configured posture -- "
+                f"{at_zero * 1000:.0f} mm short. Refreeze the thumb at the angles above.")
+    return ("No posture opposes: the nearest fingertip stays "
+            f"{best * 1000:.0f} mm away. Grasps have to cage against the palm.")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -58,6 +72,9 @@ def main() -> int:
 
     print(f"DexHand v2 as generated from {args.urdf.name}")
     print(f"  actuated : {report['n_dof']} -- {', '.join(report['joint_names'])}")
+    print(f"  coupled  : {len(report['coupled_joints'])}")
+    for line in report["coupled_joints"]:
+        print(f"             {line}")
     print(f"  frozen   : {len(report['frozen_joints'])} -- {', '.join(report['frozen_joints'])}")
     print()
 
@@ -79,25 +96,26 @@ def main() -> int:
             for p in (pitch.lower, pitch.upper)
         ]
         print(f"  {finger:7s} {heights[0] * 1000:5.1f} -> {heights[1] * 1000:5.1f} mm")
-    print("  A caging grasp closes an object into this sweep. There is no pinch;")
-    print("  see the opposition figures below.")
+    print("  An object is caged into this sweep. Whether the hand can also pinch")
+    print("  depends on the thumb -- see the opposition figures below.")
     print()
 
     if args.upstream.is_file():
-        upstream = Chain.from_urdf(args.upstream)
+        upstream = Chain.from_urdf(args.upstream, repair_mimics=True)
         at_zero = opposition_gap(hand, upstream, np.zeros(len(THUMB_JOINTS)))
         angles, best = best_thumb_posture(hand, upstream, restarts=args.restarts)
         print("Opposition -- closest any fingertip comes to the frozen thumb tip")
-        print(f"  as generated (thumb frozen at joint zero): {at_zero * 1000:6.1f} mm")
-        print(f"  best posture the mechanism allows        : {best * 1000:6.1f} mm")
+        print(f"  at the configured posture: {at_zero * 1000:6.1f} mm")
+        print(f"  best the mechanism allows: {best * 1000:6.1f} mm")
         print("    " + ", ".join(f"{n}={v:+.3f}" for n, v in zip(THUMB_JOINTS, angles))
               + "  (R_Thumb_DIP mimics R_Thumb_Flexor)")
         print()
-        print("  The thumb has no servo, so its posture is a build-time choice, and")
-        print("  joint zero is the worst one available -- it is the fully extended,")
-        print("  splayed pose. Re-freezing it at the posture above roughly halves the")
-        print("  gap. It does not make the hand pinch: at any posture the nearest")
-        print("  fingertip stays tens of millimetres away.")
+        print("  No servo reaches the thumb, so its posture is decided when the hand")
+        print("  is assembled. Set it in the `hand.thumb` block of")
+        print("  config/arm_attachment.yaml and regenerate; the generator bakes the")
+        print("  angle into the joint origin.")
+        print()
+        print(f"  {_verdict(at_zero, best)}")
     else:
         print(f"(skipped the thumb study: {args.upstream} not found)")
     return 0

@@ -7,6 +7,8 @@ from berkeley_humanoid_lite_motion import dexhand as dh
 from berkeley_humanoid_lite_motion.dexhand import FINGERS
 from berkeley_humanoid_lite_motion.urdf import axis_angle_to_matrix, rpy_to_matrix
 
+from conftest import ATTACHMENT_CONFIG, UPSTREAM_URDF
+
 
 def test_rpy_matches_sequential_axis_rotations():
     rpy = np.array([0.3, -0.7, 1.1])
@@ -38,17 +40,75 @@ def test_generated_and_upstream_agree_on_frames(hand, upstream):
 
 
 def test_only_eight_joints_are_actuated(hand):
-    """The whole pipeline is built on this. If a URDF regeneration ever unfreezes
-    the thumb or the flexors, the retargeting objective has to change with it."""
+    """Eight servos, and the retargeting objective is built on exactly these.
+    Coupled joints move but cannot be commanded; frozen ones do neither."""
     assert hand.joint_names == tuple(
         f"R_{f}_{a}" for a in ("Pitch", "Yaw") for f in FINGERS
     )
+    coupled = {n for n, j in hand.chain.joints.items()
+               if j.mimic is not None and n.startswith("R_")}
     frozen = {n for n, j in hand.chain.joints.items()
-              if not j.actuated and n.startswith("R_") and "tip_fixed" not in n}
-    assert len(frozen) == 13
-    assert {n for n in frozen if "Thumb" in n} == {
-        "R_Thumb_Yaw", "R_Thumb_Roll", "R_Thumb_Pitch", "R_Thumb_Flexor", "R_Thumb_DIP"
-    }
+              if not j.movable and n.startswith("R_") and "tip_fixed" not in n}
+    assert len(coupled) == 8                    # flexor and DIP, both per finger
+    assert frozen == {"R_Thumb_Yaw", "R_Thumb_Roll", "R_Thumb_Pitch",
+                      "R_Thumb_Flexor", "R_Thumb_DIP"}
+
+
+def test_one_servo_curls_a_whole_finger(hand):
+    """The point of the coupling. Commanding only the knuckle must carry the
+    middle phalanx and the tip with it, or the finger is a rigid rod again."""
+    chain = hand.chain
+    for finger in FINGERS:
+        resolved = chain.resolve({f"R_{finger}_Pitch": 0.8})
+        assert resolved[f"R_{finger}_Flexor"] == pytest.approx(0.8)
+        assert resolved[f"R_{finger}_DIP"] == pytest.approx(0.8)
+
+
+def test_the_coupling_chain_resolves_transitively(hand):
+    """DIP follows the flexor, which follows the knuckle. A single pass over the
+    joints would leave the DIP at zero and quietly half-straighten the finger."""
+    chain = hand.chain
+    dip = chain.joints["R_Index_DIP"]
+    assert dip.mimic[0] == "R_Index_Flexor"
+    assert chain.joints["R_Index_Flexor"].mimic[0] == "R_Index_Pitch"
+    assert chain.resolve({"R_Index_Pitch": 0.5})["R_Index_DIP"] == pytest.approx(0.5)
+
+
+def test_a_curled_finger_reaches_further_than_a_rigid_one(hand):
+    """Fingertip travel is what the coupling buys: it sweeps an arc into the
+    palm instead of pivoting about one knuckle."""
+    tips = np.stack([
+        hand.chain.position(dh.tip_frame("Index"), dh.PALM_FRAME, {"R_Index_Pitch": p})
+        for p in np.linspace(0.0, 0.95, 20)
+    ])
+    travel = np.linalg.norm(tips[-1] - tips[0])
+    assert travel > 0.09                        # ~110 mm curled, ~65 mm rigid
+    # ... and it ends up nearer the palm than it started, not further out.
+    assert tips[-1][2] < tips[0][2] - 0.05
+
+
+def test_upstream_mimic_references_are_broken_and_repairable(upstream):
+    """Every `<mimic>` upstream ships names a joint that does not exist -- it
+    drops the `R_` the joints carry. Loading it strictly must fail."""
+    from berkeley_humanoid_lite_motion.urdf import Chain
+
+    with pytest.raises(KeyError):
+        Chain.from_urdf(UPSTREAM_URDF)          # no repair: broken, and says so
+    assert upstream.joints["R_Index_DIP"].mimic[0] == "R_Index_Flexor"
+
+
+def test_frozen_thumb_carries_its_configured_angle(hand):
+    """A frozen joint's angle is baked into its origin, so setting a non-zero
+    angle in the config actually moves the thumb rather than being ignored."""
+    import yaml
+
+    config = yaml.safe_load(ATTACHMENT_CONFIG.read_text())
+    configured = config["hand"]["thumb"]
+    assert set(configured) == {"R_Thumb_Yaw", "R_Thumb_Roll", "R_Thumb_Pitch",
+                               "R_Thumb_Flexor", "R_Thumb_DIP"}
+    # The shipped config is all zeros, so the thumb must sit where upstream's
+    # zero pose puts it. Any drift here means the bake changed the geometry.
+    assert np.allclose(hand.thumb_tip(), [0.1186, 0.00907, 0.0609], atol=1e-4)
 
 
 def test_servo_travel_is_tighter_than_upstream(hand, upstream):
@@ -60,23 +120,11 @@ def test_servo_travel_is_tighter_than_upstream(hand, upstream):
     assert np.isclose(upper[4], 0.30)      # yaw,   vs 0.349 upstream
 
 
-def test_fingers_are_rigid_beyond_the_knuckle(hand):
-    """Flexor and DIP are fixed, so a finger is one rigid link on one hinge --
-    the reason fingertip position, not joint angle, is the retargeting target."""
-    tip_open = hand.chain.position(dh.tip_frame("Index"), dh.PALM_FRAME, {"R_Index_Pitch": 0.0})
-    knuckle = hand.chain.position("Index_Knuckle_1", dh.PALM_FRAME, {"R_Index_Pitch": 0.0})
-    for pitch in (0.2, 0.6, 0.95):
-        moved_tip = hand.chain.position(dh.tip_frame("Index"), dh.PALM_FRAME, {"R_Index_Pitch": pitch})
-        moved_knuckle = hand.chain.position("Index_Knuckle_1", dh.PALM_FRAME, {"R_Index_Pitch": pitch})
-        assert np.isclose(np.linalg.norm(moved_tip - moved_knuckle),
-                          np.linalg.norm(tip_open - knuckle), atol=1e-12)
-
-
-def test_the_hand_cannot_pinch(hand, upstream):
-    """No fingertip reaches the frozen thumb, at any posture the thumb could be
-    fixed in. Pick-and-place has to be a caging grasp, not a pinch."""
+def test_pinch_needs_the_thumb_refrozen(hand, upstream):
+    """With the fingers curling, opposition becomes reachable -- but not at the
+    thumb posture the config currently ships, which is joint zero."""
     at_zero = dh.opposition_gap(hand, upstream, np.zeros(4))
-    _, best = dh.best_thumb_posture(hand, upstream, restarts=4)
-    assert at_zero > 0.08                      # 85 mm as the URDF ships
-    assert best > 0.03                         # 43 mm at the most opposed posture
-    assert best < at_zero                      # ... but the posture choice matters
+    _, best = dh.best_thumb_posture(hand, upstream, restarts=6)
+    assert at_zero > 0.03                      # ~52 mm: nothing opposes as shipped
+    assert best < 0.005                        # ~0 mm: a fingertip can meet the thumb
+    assert best < at_zero

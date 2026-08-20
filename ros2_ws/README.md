@@ -127,6 +127,55 @@ rescales mass and inertia by `structure_density_kgm3 / 7850`. The rescaled
 figure covers plastic only; the servos, battery and electronics inside the
 forearm are not modelled at all.
 
+## Which DexHand this is, and why the fingers curl
+
+The vendored description is the complete V2 hand: 16 independently actuated
+joints plus 5 that mimic. This robot has 8 servos. Which joints those drive, and
+what the other 13 do, is set in the `hand` block of
+`description/config/arm_attachment.yaml`:
+
+| | |
+| --- | --- |
+| **actuated** (8) | `R_{Index,Middle,Ring,Pinky}_{Pitch,Yaw}`, at the servos' travel -- pitch 0.95 rad against the mechanism's 1.309, yaw 0.30 against 0.349 |
+| **coupled** (8) | each flexor follows its knuckle, each DIP follows its flexor, emitted as `<mimic>` |
+| **frozen** (5) | the whole thumb, welded at the angles the config names, with the rotation baked into the joint origin |
+
+**This used to come from a file on one developer's laptop.** `generate_urdf.py`
+read `dexhand_moveit_ws/.../dexhandv2_right_8servo.urdf` when it existed and the
+full 16-joint description when it did not, so regenerating anywhere else
+silently produced a different robot -- one with no fingertip frames to aim at
+and every finger joint free. `generate_srdf.py` had the same problem with the
+matching SRDF, except that one failed outright. Both now read from the
+repository, and the models are reproducible from a fresh clone.
+
+The coupling is the part that changes behaviour. With the flexors and DIPs
+welded, a finger was a rigid 75 mm rod on a single hinge: it could not close on
+anything, and no retargeting could make it. Coupled, one servo curls the whole
+finger through 163 degrees. Measured with `scripts/motion/analyze_hand.py`:
+
+| | welded | coupled |
+| --- | ---: | ---: |
+| Fingertip travel | 101 mm | 137 mm |
+| Closest a fingertip comes to the thumb, as configured | 85.5 mm | 51.8 mm |
+| ... at the best thumb posture the mechanism allows | 43.3 mm | 0.0 mm |
+
+So a pinch is now reachable -- but not at the posture the config ships, which is
+joint zero: the fully extended, splayed pose, 52 mm short of anything. No servo
+reaches the thumb, so that posture is decided when the hand is assembled.
+`analyze_hand.py` prints the angles that close the gap; put them in
+`hand.thumb` and regenerate.
+
+**The coupling ratios are estimates.** Both ship at 1.0, which is the right
+shape for a linkage-driven finger and the wrong precision, and every number
+above moves with them. Measure them with
+`scripts/motion/fit_finger_coupling.py`, and if the fingers on this build really
+are rigid, set the multipliers to 0 and regenerate.
+
+While fixing this, one upstream defect surfaced: every `<mimic>` in
+`dexhandv2_right.urdf` names its driver without the `R_` prefix the joints
+carry, so all five point at joints that do not exist. The generated models
+re-emit them with the right names.
+
 ## The left hand is generated, not shipped
 
 `dexhandv2_description` provides `right` and `cobot_right` meshes and no left
