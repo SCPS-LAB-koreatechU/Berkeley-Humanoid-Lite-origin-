@@ -114,8 +114,6 @@ you; the launch files here do not.
 
 `model:=` selects `v1arm` (the default), `dexhand`, `stock` or `tuning`.
 
-Models there are `stock`, `dexhand` and `tuning`.
-
 ## Packages
 
 | Package | Contents |
