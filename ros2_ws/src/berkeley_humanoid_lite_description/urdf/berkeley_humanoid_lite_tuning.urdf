@@ -1175,6 +1175,9 @@
     <parent link="Thumb_Middle_1" />
     <child link="Thumb_Tip_1" />
   </joint>
+  <material name="silver">
+    <color rgba="0.700 0.700 0.700 1.000" />
+  </material>
   <link name="arm_left_mount" />
   <joint name="arm_left_forearm_mount" type="fixed">
     <parent link="arm_left_elbow_roll" />
@@ -1976,4 +1979,7 @@
     <parent link="L_Thumb_Middle_1" />
     <child link="L_Thumb_Tip_1" />
   </joint>
+  <material name="L_silver">
+    <color rgba="0.700 0.700 0.700 1.000" />
+  </material>
 </robot>

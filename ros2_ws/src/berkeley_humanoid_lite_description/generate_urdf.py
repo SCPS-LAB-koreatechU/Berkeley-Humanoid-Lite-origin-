@@ -761,6 +761,15 @@ def graft_v2_digits(robot, side, config, dexhand, mounts) -> None:
         for element in links + [joint] + joints:
             robot.append(element)
 
+    # The digits' visuals name materials ("silver") that the V2 description
+    # defines once at the top level. Without those definitions RViz has no
+    # colour to give the hand and falls back to its error red.
+    existing = {m.get("name") for m in robot.findall("material")}
+    for material in dexhand.findall("material"):
+        if material.get("name") not in existing:
+            existing.add(material.get("name"))
+            robot.append(copy.deepcopy(material))
+
 
 def attach_arm(robot, side, config, dexhand, tunable=False):
     """Strip the stock hand and build elbow -> mount -> wrist -> hand."""
